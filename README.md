@@ -1,24 +1,14 @@
 # LemonBench - Linux Server Benchmark Toolkit
 
-Current Version: 20200426 Intl BetaVersion
+Current Version: 20220701 Intl Bespoke
 
-
-
-- LemonBench v2 coming soon :)
-
-- This version (20200426) of LemonBench v1 is the final Functional Update. It may not update to any new version if there is not any critical issues or configuration failure.
-
-
+SpeedTest server list and traceroute ip list is different from original LemonBench.
 
 LemonBench is a simple Linux Server Evaluation & Benchmark Toolkit, written in Shell Script.
 
 This simple tool can test linux server/vps performance in about 10 minutes, and gerenate a report, which can share to others.
 
-Currently, LemonBench supports ```i386/i686```, ```x86_64```, ```armel/armhf```, ```arm64/aarch64``` architectures, and support CentOS / Debian / Ubuntu / Fedora / Raspbian OS.
-
-Feel free for PR, and good issues, and please add stars and donate if you feel it is a good tool !
-
-
+Currently, LemonBench supports CentOS / Debian / Ubuntu / Fedora on ```i386/i686``` and ```x86_64```.
 
 ### Current Support Features
 
