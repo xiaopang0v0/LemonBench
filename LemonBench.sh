@@ -9,24 +9,19 @@
 # | Telegram (For +86 User): https://t.me/ilemonrain_chatbot         |
 # | Telegram Channel: https://t.me/ilemonrain_channel                |
 # #------------------------------------------------------------------#
-# | If you like this project, feel free to donate!                   |
-# | 如果你喜欢这个项目, 欢迎投喂打赏！                                  |
-# |                                                                  |
-# | Donate Method 打赏方式:                                          |
-# | Alipay QR Code: http://t.cn/EA3pZNt                              |
-# | 支付宝二维码:http://t.cn/EA3pZNt                                 |
-# | Wechat QR Code: http://t.cn/EA3p639                              |
-# | 微信二维码: http://t.cn/EA3p639                                   |
+# | Modified: dz_paji <zhangqian2002@outlook.com>                    |
+# | My Blog: https://blog.paji.uk                                    |
+# | Telegram: https://t.me/pajiuk                                    |
 # #------------------------------------------------------------------#
 #
 # 使用方法 (任选其一):
-# (1) wget -O- https://ilemonrain.com/download/shell/LemonBench.sh | bash
-# (2) curl -fsL https://ilemonrain.com/download/shell/LemonBench.sh | bash
+# (1) wget -O- https://raw.githubusercontent.com/HostEvaluate/LemonBench/master/LemonBench.sh | bash
+# (2) curl -fsL https://raw.githubusercontent.com/HostEvaluate/LemonBench/master/LemonBench.sh | bash
 #
 # === 全局定义 =====================================
 
 # 全局参数定义
-BuildTime="20200426 Intl BetaVersion"
+BuildTime="20220701 Intl Bespoke"
 WorkDir="/tmp/.LemonBench"
 UA_LemonBench="LemonBench/${BuildTime}"
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
@@ -120,7 +115,7 @@ PasteBin_Upload() {
         --data-urlencode "content@${PASTEBIN_CONTENT:-/dev/stdin}" \
         --data "poster=${PASTEBIN_POSTER:-LemonBench}" \
         --data "expiration=${PASTEBIN_EXPIRATION:-}" \
-        --data "syntax=${PASTEBIN_SYNTAX:-text}")"
+    --data "syntax=${PASTEBIN_SYNTAX:-text}")"
     if [ "$?" = "0" ]; then
         echo -e "${Msg_Success}Report Generate Success！Please save the follwing link:"
         echo -e "${Msg_Info}Report URL: ${uploadresult}"
@@ -217,7 +212,7 @@ SystemInfo_GetCPUInfo() {
         else
             LBench_Result_CPUVirtualization="0"
         fi
-    elif [ "${Var_VirtType}" = "kvm" ] || [ "${Var_VirtType}" = "hyperv" ] || [ "${Var_VirtType}" = "microsoft" ] || [ "${Var_VirtType}" = "vmware" ]; then
+        elif [ "${Var_VirtType}" = "kvm" ] || [ "${Var_VirtType}" = "hyperv" ] || [ "${Var_VirtType}" = "microsoft" ] || [ "${Var_VirtType}" = "vmware" ]; then
         LBench_Result_CPUIsPhysical="0"
         local VirtCheck="$(cat /proc/cpuinfo | grep -oE 'vmx|svm' | uniq)"
         if [ "${VirtCheck}" = "vmx" ] || [ "${VirtCheck}" = "svm" ]; then
@@ -226,7 +221,7 @@ SystemInfo_GetCPUInfo() {
             LBench_Result_CPUVirtualizationType="${VirtualizationType}"
         else
             LBench_Result_CPUVirtualization="0"
-        fi        
+        fi
     else
         LBench_Result_CPUIsPhysical="0"
     fi
@@ -276,17 +271,17 @@ SystemInfo_GetSystemBit() {
         # X86平台 64位
         LBench_Result_SystemBit_Short="64"
         LBench_Result_SystemBit_Full="amd64"
-    elif [ "${sysarch}" = "i386" ] || [ "${sysarch}" = "i686" ]; then
+        elif [ "${sysarch}" = "i386" ] || [ "${sysarch}" = "i686" ]; then
         # X86平台 32位
         LBench_Result_SystemBit_Short="32"
         LBench_Result_SystemBit_Full="i386"
-    elif [ "${sysarch}" = "armv7l" ] || [ "${sysarch}" = "armv8" ] || [ "${sysarch}" = "armv8l" ] || [ "${sysarch}" = "aarch64" ]; then
+        elif [ "${sysarch}" = "armv7l" ] || [ "${sysarch}" = "armv8" ] || [ "${sysarch}" = "armv8l" ] || [ "${sysarch}" = "aarch64" ]; then
         # ARM平台 暂且将32位/64位统一对待
         LBench_Result_SystemBit_Short="arm"
         LBench_Result_SystemBit_Full="arm"
     else
         LBench_Result_SystemBit_Short="unknown"
-        LBench_Result_SystemBit_Full="unknown"                
+        LBench_Result_SystemBit_Full="unknown"
     fi
 }
 
@@ -332,10 +327,10 @@ SystemInfo_GetOSRelease() {
         if [ "$(rpm -qa | grep -o el6 | sort -u)" = "el6" ]; then
             Var_CentOSELRepoVersion="6"
             local Var_OSReleaseVersion="$(cat /etc/centos-release | awk '{print $3}')"
-        elif [ "$(rpm -qa | grep -o el7 | sort -u)" = "el7" ]; then
+            elif [ "$(rpm -qa | grep -o el7 | sort -u)" = "el7" ]; then
             Var_CentOSELRepoVersion="7"
             local Var_OSReleaseVersion="$(cat /etc/centos-release | awk '{print $4}')"
-        elif [ "$(rpm -qa | grep -o el8 | sort -u)" = "el8" ]; then
+            elif [ "$(rpm -qa | grep -o el8 | sort -u)" = "el8" ]; then
             Var_CentOSELRepoVersion="8"
             local Var_OSReleaseVersion="$(cat /etc/centos-release | awk '{print $4}')"
         else
@@ -344,16 +339,16 @@ SystemInfo_GetOSRelease() {
         fi
         local Var_OSReleaseArch="$(arch)"
         LBench_Result_OSReleaseFullName="$Var_OSReleaseFullName $Var_OSReleaseVersion ($Var_OSReleaseArch)"
-    elif [ -f "/etc/redhat-release" ]; then # RedHat
+        elif [ -f "/etc/redhat-release" ]; then # RedHat
         Var_OSRelease="rhel"
         local Var_OSReleaseFullName="$(cat /etc/os-release | awk -F '[= "]' '/PRETTY_NAME/{print $3,$4}')"
         if [ "$(rpm -qa | grep -o el6 | sort -u)" = "el6" ]; then
             Var_RedHatELRepoVersion="6"
             local Var_OSReleaseVersion="$(cat /etc/redhat-release | awk '{print $3}')"
-        elif [ "$(rpm -qa | grep -o el7 | sort -u)" = "el7" ]; then
+            elif [ "$(rpm -qa | grep -o el7 | sort -u)" = "el7" ]; then
             Var_RedHatELRepoVersion="7"
             local Var_OSReleaseVersion="$(cat /etc/redhat-release | awk '{print $4}')"
-        elif [ "$(rpm -qa | grep -o el8 | sort -u)" = "el8" ]; then
+            elif [ "$(rpm -qa | grep -o el8 | sort -u)" = "el8" ]; then
             Var_RedHatELRepoVersion="8"
             local Var_OSReleaseVersion="$(cat /etc/redhat-release | awk '{print $4}')"
         else
@@ -362,20 +357,20 @@ SystemInfo_GetOSRelease() {
         fi
         local Var_OSReleaseArch="$(arch)"
         LBench_Result_OSReleaseFullName="$Var_OSReleaseFullName $Var_OSReleaseVersion ($Var_OSReleaseArch)"
-    elif [ -f "/etc/fedora-release" ]; then # Fedora
+        elif [ -f "/etc/fedora-release" ]; then # Fedora
         Var_OSRelease="fedora"
         local Var_OSReleaseFullName="$(cat /etc/os-release | awk -F '[= "]' '/PRETTY_NAME/{print $3}')"
         local Var_OSReleaseVersion="$(cat /etc/fedora-release | awk '{print $3,$4,$5,$6,$7}')"
         local Var_OSReleaseArch="$(arch)"
         LBench_Result_OSReleaseFullName="$Var_OSReleaseFullName $Var_OSReleaseVersion ($Var_OSReleaseArch)"
-    elif [ -f "/etc/lsb-release" ]; then # Ubuntu
+        elif [ -f "/etc/lsb-release" ]; then # Ubuntu
         Var_OSRelease="ubuntu"
         local Var_OSReleaseFullName="$(cat /etc/os-release | awk -F '[= "]' '/NAME/{print $3}' | head -n1)"
         local Var_OSReleaseVersion="$(cat /etc/os-release | awk -F '[= "]' '/VERSION/{print $3,$4,$5,$6,$7}' | head -n1)"
         local Var_OSReleaseArch="$(arch)"
         LBench_Result_OSReleaseFullName="$Var_OSReleaseFullName $Var_OSReleaseVersion ($Var_OSReleaseArch)"
         Var_OSReleaseVersion_Short="$(cat /etc/lsb-release | awk -F '[= "]' '/DISTRIB_RELEASE/{print $2}')"
-    elif [ -f "/etc/debian_version" ]; then # Debian
+        elif [ -f "/etc/debian_version" ]; then # Debian
         Var_OSRelease="debian"
         local Var_OSReleaseFullName="$(cat /etc/os-release | awk -F '[= "]' '/PRETTY_NAME/{print $3,$4}')"
         local Var_OSReleaseVersion="$(cat /etc/debian_version | awk '{print $1}')"
@@ -384,15 +379,15 @@ SystemInfo_GetOSRelease() {
             Var_OSReleaseVersion_Short="7"
             Var_OSReleaseVersion_Codename="wheezy"
             local Var_OSReleaseFullName="${Var_OSReleaseFullName} \"Wheezy\""
-        elif [ "${Var_OSReleaseVersionShort}" = "8" ]; then
+            elif [ "${Var_OSReleaseVersionShort}" = "8" ]; then
             Var_OSReleaseVersion_Short="8"
             Var_OSReleaseVersion_Codename="jessie"
             local Var_OSReleaseFullName="${Var_OSReleaseFullName} \"Jessie\""
-        elif [ "${Var_OSReleaseVersionShort}" = "9" ]; then
+            elif [ "${Var_OSReleaseVersionShort}" = "9" ]; then
             Var_OSReleaseVersion_Short="9"
             Var_OSReleaseVersion_Codename="stretch"
             local Var_OSReleaseFullName="${Var_OSReleaseFullName} \"Stretch\""
-        elif [ "${Var_OSReleaseVersionShort}" = "10" ]; then
+            elif [ "${Var_OSReleaseVersionShort}" = "10" ]; then
             Var_OSReleaseVersion_Short="10"
             Var_OSReleaseVersion_Codename="buster"
             local Var_OSReleaseFullName="${Var_OSReleaseFullName} \"Buster\""
@@ -403,7 +398,7 @@ SystemInfo_GetOSRelease() {
         fi
         local Var_OSReleaseArch="$(arch)"
         LBench_Result_OSReleaseFullName="$Var_OSReleaseFullName $Var_OSReleaseVersion ($Var_OSReleaseArch)"
-    elif [ -f "/etc/alpine-release" ]; then # Alpine Linux
+        elif [ -f "/etc/alpine-release" ]; then # Alpine Linux
         Var_OSRelease="alpinelinux"
         local Var_OSReleaseFullName="$(cat /etc/os-release | awk -F '[= "]' '/NAME/{print $3,$4}' | head -n1)"
         local Var_OSReleaseVersion="$(cat /etc/alpine-release | awk '{print $1}')"
@@ -421,43 +416,43 @@ SystemInfo_GetVirtType() {
         # 虚拟机检测
         if [ "${Var_VirtType}" = "qemu" ]; then
             LBench_Result_VirtType="QEMU"
-        elif [ "${Var_VirtType}" = "kvm" ]; then
+            elif [ "${Var_VirtType}" = "kvm" ]; then
             LBench_Result_VirtType="KVM"
-        elif [ "${Var_VirtType}" = "zvm" ]; then
+            elif [ "${Var_VirtType}" = "zvm" ]; then
             LBench_Result_VirtType="S390 Z/VM"
-        elif [ "${Var_VirtType}" = "vmware" ]; then
+            elif [ "${Var_VirtType}" = "vmware" ]; then
             LBench_Result_VirtType="VMware"
-        elif [ "${Var_VirtType}" = "microsoft" ]; then
+            elif [ "${Var_VirtType}" = "microsoft" ]; then
             LBench_Result_VirtType="Microsoft Hyper-V"
-        elif [ "${Var_VirtType}" = "xen" ]; then
+            elif [ "${Var_VirtType}" = "xen" ]; then
             LBench_Result_VirtType="Xen Hypervisor"
-        elif [ "${Var_VirtType}" = "bochs" ]; then
-            LBench_Result_VirtType="BOCHS"   
-        elif [ "${Var_VirtType}" = "uml" ]; then
-            LBench_Result_VirtType="User-mode Linux"   
-        elif [ "${Var_VirtType}" = "parallels" ]; then
-            LBench_Result_VirtType="Parallels"   
-        elif [ "${Var_VirtType}" = "bhyve" ]; then
+            elif [ "${Var_VirtType}" = "bochs" ]; then
+            LBench_Result_VirtType="BOCHS"
+            elif [ "${Var_VirtType}" = "uml" ]; then
+            LBench_Result_VirtType="User-mode Linux"
+            elif [ "${Var_VirtType}" = "parallels" ]; then
+            LBench_Result_VirtType="Parallels"
+            elif [ "${Var_VirtType}" = "bhyve" ]; then
             LBench_Result_VirtType="FreeBSD Hypervisor"
-        # 容器虚拟化检测
-        elif [ "${Var_VirtType}" = "openvz" ]; then
+            # 容器虚拟化检测
+            elif [ "${Var_VirtType}" = "openvz" ]; then
             LBench_Result_VirtType="OpenVZ"
-        elif [ "${Var_VirtType}" = "lxc" ]; then
-            LBench_Result_VirtType="LXC"        
-        elif [ "${Var_VirtType}" = "lxc-libvirt" ]; then
-            LBench_Result_VirtType="LXC (libvirt)"        
-        elif [ "${Var_VirtType}" = "systemd-nspawn" ]; then
-            LBench_Result_VirtType="Systemd nspawn"        
-        elif [ "${Var_VirtType}" = "docker" ]; then
-            LBench_Result_VirtType="Docker"        
-        elif [ "${Var_VirtType}" = "rkt" ]; then
+            elif [ "${Var_VirtType}" = "lxc" ]; then
+            LBench_Result_VirtType="LXC"
+            elif [ "${Var_VirtType}" = "lxc-libvirt" ]; then
+            LBench_Result_VirtType="LXC (libvirt)"
+            elif [ "${Var_VirtType}" = "systemd-nspawn" ]; then
+            LBench_Result_VirtType="Systemd nspawn"
+            elif [ "${Var_VirtType}" = "docker" ]; then
+            LBench_Result_VirtType="Docker"
+            elif [ "${Var_VirtType}" = "rkt" ]; then
             LBench_Result_VirtType="RKT"
-        # 特殊处理
-        elif [ -c "/dev/lxss" ]; then # 处理WSL虚拟化
+            # 特殊处理
+            elif [ -c "/dev/lxss" ]; then # 处理WSL虚拟化
             Var_VirtType="wsl"
             LBench_Result_VirtType="Windows Subsystem for Linux (WSL)"
-        # 未匹配到任何结果, 或者非虚拟机 
-        elif [ "${Var_VirtType}" = "none" ]; then
+            # 未匹配到任何结果, 或者非虚拟机
+            elif [ "${Var_VirtType}" = "none" ]; then
             Var_VirtType="dedicated"
             LBench_Result_VirtType="None"
             local Var_BIOSVendor="$(dmidecode -s bios-vendor)"
@@ -469,13 +464,13 @@ SystemInfo_GetVirtType() {
                 LBench_Result_VirtType="Dedicated with ${Var_BIOSVendor} BIOS"
             fi
         fi
-    elif [ ! -f "/usr/sbin/virt-what" ]; then
+        elif [ ! -f "/usr/sbin/virt-what" ]; then
         Var_VirtType="Unknown"
         LBench_Result_VirtType="[Error: virt-what not found !]"
-    elif [ -f "/.dockerenv" ]; then # 处理Docker虚拟化
+        elif [ -f "/.dockerenv" ]; then # 处理Docker虚拟化
         Var_VirtType="docker"
         LBench_Result_VirtType="Docker"
-    elif [ -c "/dev/lxss" ]; then # 处理WSL虚拟化
+        elif [ -c "/dev/lxss" ]; then # 处理WSL虚拟化
         Var_VirtType="wsl"
         LBench_Result_VirtType="Windows Subsystem for Linux (WSL)"
     else # 正常判断流程
@@ -484,7 +479,7 @@ SystemInfo_GetVirtType() {
         if [ "${Var_VirtTypeCount}" -gt "1" ]; then # 处理嵌套虚拟化
             LBench_Result_VirtType="echo ${Var_VirtType}"
             Var_VirtType="$(echo ${Var_VirtType} | head -n1)" # 使用检测到的第一种虚拟化继续做判断
-        elif [ "${Var_VirtTypeCount}" -eq "1" ] && [ "${Var_VirtType}" != "" ]; then # 只有一种虚拟化
+            elif [ "${Var_VirtTypeCount}" -eq "1" ] && [ "${Var_VirtType}" != "" ]; then # 只有一种虚拟化
             LBench_Result_VirtType="${Var_VirtType}"
         else
             local Var_BIOSVendor="$(dmidecode -s bios-vendor)"
@@ -543,9 +538,9 @@ SystemInfo_GetNetworkInfo() {
     local Result_IPV6="$(curl --connect-timeout 10 -fsL6 https://api.ilemonrain.com/LemonBench/ipgeo.php)"
     if [ "${Result_IPV4}" != "" ] && [ "${Result_IPV6}" = "" ]; then
         LBench_Result_NetworkStat="ipv4only"
-    elif [ "${Result_IPV4}" = "" ] && [ "${Result_IPV6}" != "" ]; then
+        elif [ "${Result_IPV4}" = "" ] && [ "${Result_IPV6}" != "" ]; then
         LBench_Result_NetworkStat="ipv6only"
-    elif [ "${Result_IPV4}" != "" ] && [ "${Result_IPV6}" != "" ]; then
+        elif [ "${Result_IPV4}" != "" ] && [ "${Result_IPV6}" != "" ]; then
         LBench_Result_NetworkStat="dualstack"
     else
         LBench_Result_NetworkStat="unknown"
@@ -615,7 +610,7 @@ Function_ShowSystemInfo() {
     fi
     if [ "${Flag_DymanicCPUFreqDetected}" = "1" ]; then
         echo -e " ${Font_Yellow}CPU Model:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_CPUModelName}${Font_Suffix}  ${Font_White}${LBench_Result_CPUFreqMinGHz}~${LBench_Result_CPUFreqMaxGHz}${Font_Suffix}${Font_SkyBlue} GHz${Font_Suffix}"
-    elif [ "${Flag_DymanicCPUFreqDetected}" = "0" ]; then
+        elif [ "${Flag_DymanicCPUFreqDetected}" = "0" ]; then
         echo -e " ${Font_Yellow}CPU Model:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_CPUModelName}  ${LBench_Result_CPUFreqGHz} GHz${Font_Suffix}"
     fi
     if [ "${LBench_Result_CPUCacheSize}" != "" ]; then
@@ -628,19 +623,19 @@ Function_ShowSystemInfo() {
         # 如果只存在1个物理CPU (单路物理服务器)
         if [ "${LBench_Result_CPUPhysicalNumber}" -eq "1" ]; then
             echo -e " ${Font_Yellow}CPU Number:${Font_Suffix}\t\t${LBench_Result_CPUPhysicalNumber} ${Font_SkyBlue}Physical CPU${Font_Suffix}, ${LBench_Result_CPUCoreNumber} ${Font_SkyBlue}Cores${Font_Suffix}, ${LBench_Result_CPUThreadNumber} ${Font_SkyBlue}Threads${Font_Suffix}"
-        # 存在多个CPU, 继续深入分析检测 (多路物理服务器)
-        elif [ "${LBench_Result_CPUPhysicalNumber}" -ge "2" ]; then
+            # 存在多个CPU, 继续深入分析检测 (多路物理服务器)
+            elif [ "${LBench_Result_CPUPhysicalNumber}" -ge "2" ]; then
             echo -e " ${Font_Yellow}CPU Number:${Font_Suffix}\t\t${LBench_Result_CPUPhysicalNumber} ${Font_SkyBlue}Physical CPU(s)${Font_Suffix}, ${LBench_Result_CPUCoreNumber} ${Font_SkyBlue}Cores/CPU${Font_Suffix}, ${LBench_Result_CPUSiblingsNumber} ${Font_SkyBlue}Threads/CPU${Font_Suffix} (Total ${Font_SkyBlue}${LBench_Result_CPUTotalCoreNumber}${Font_Suffix} Cores, ${Font_SkyBlue}${LBench_Result_CPUProcessorNumber}${Font_Suffix} Threads)"
-        # 针对树莓派等特殊情况做出检测优化
-        elif [ "${LBench_Result_CPUThreadNumber}" = "0" ] && [ "${LBench_Result_CPUProcessorNumber} " -ge "1" ]; then
-             echo -e " ${Font_Yellow}CPU Number:${Font_Suffix}\t\t${LBench_Result_CPUProcessorNumber} ${Font_SkyBlue}Cores${Font_Suffix}"
+            # 针对树莓派等特殊情况做出检测优化
+            elif [ "${LBench_Result_CPUThreadNumber}" = "0" ] && [ "${LBench_Result_CPUProcessorNumber} " -ge "1" ]; then
+            echo -e " ${Font_Yellow}CPU Number:${Font_Suffix}\t\t${LBench_Result_CPUProcessorNumber} ${Font_SkyBlue}Cores${Font_Suffix}"
         fi
         if [ "${LBench_Result_CPUVirtualization}" = "1" ]; then
             echo -e " ${Font_Yellow}VirtReady:${Font_Suffix}\t\t${Font_SkyBlue}Yes${Font_Suffix} ${Font_SkyBlue}(Based on${Font_Suffix} ${LBench_Result_CPUVirtualizationType}${Font_SkyBlue})${Font_Suffix}"
         else
             echo -e " ${Font_Yellow}VirtReady:${Font_Suffix}\t\t${Font_SkyRed}No${Font_Suffix}"
         fi
-    elif [ "${Var_VirtType}" = "openvz" ]; then
+        elif [ "${Var_VirtType}" = "openvz" ]; then
         echo -e " ${Font_Yellow}CPU Number:${Font_Suffix}\t\t${LBench_Result_CPUThreadNumber} ${Font_SkyBlue}vCPU${Font_Suffix} (${LBench_Result_CPUCoreNumber} ${Font_SkyBlue}Host Core/Thread${Font_Suffix})"
     else
         if [ "${LBench_Result_CPUVirtualization}" = "2" ]; then
@@ -655,10 +650,10 @@ Function_ShowSystemInfo() {
     if [ "${LBench_Result_MemoryUsed_KB}" -lt "1024" ] && [ "${LBench_Result_MemoryTotal_KB}" -lt "1048576" ]; then
         LBench_Result_Memory="${LBench_Result_MemoryUsed_KB} KB / ${LBench_Result_MemoryTotal_MB} MB"
         echo -e " ${Font_Yellow}Memory Usage:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_MemoryUsed_MB} KB${Font_Suffix} / ${Font_SkyBlue}${LBench_Result_MemoryTotal_MB} MB${Font_Suffix}"
-    elif [ "${LBench_Result_MemoryUsed_KB}" -lt "1048576" ] && [ "${LBench_Result_MemoryTotal_KB}" -lt "1048576" ]; then
+        elif [ "${LBench_Result_MemoryUsed_KB}" -lt "1048576" ] && [ "${LBench_Result_MemoryTotal_KB}" -lt "1048576" ]; then
         LBench_Result_Memory="${LBench_Result_MemoryUsed_MB} MB / ${LBench_Result_MemoryTotal_MB} MB"
         echo -e " ${Font_Yellow}Memory Usage:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_MemoryUsed_MB} MB${Font_Suffix} / ${Font_SkyBlue}${LBench_Result_MemoryTotal_MB} MB${Font_Suffix}"
-    elif [ "${LBench_Result_MemoryUsed_KB}" -lt "1048576" ] && [ "${LBench_Result_MemoryTotal_KB}" -lt "1073741824" ]; then
+        elif [ "${LBench_Result_MemoryUsed_KB}" -lt "1048576" ] && [ "${LBench_Result_MemoryTotal_KB}" -lt "1073741824" ]; then
         LBench_Result_Memory="${LBench_Result_MemoryUsed_MB} MB / ${LBench_Result_MemoryTotal_GB} GB"
         echo -e " ${Font_Yellow}Memory Usage:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_MemoryUsed_MB} MB${Font_Suffix} / ${Font_SkyBlue}${LBench_Result_MemoryTotal_GB} GB${Font_Suffix}"
     else
@@ -669,16 +664,16 @@ Function_ShowSystemInfo() {
     if [ "${LBench_Result_SwapTotal_KB}" -eq "0" ]; then
         LBench_Result_Swap="[ No Swapfile / Swap partition ]"
         echo -e " ${Font_Yellow}Swap Usage:${Font_Suffix}\t\t${Font_SkyBlue}[ No Swapfile/Swap Partition ]${Font_Suffix}"
-    elif [ "${LBench_Result_SwapUsed_KB}" -lt "1024" ] && [ "${LBench_Result_SwapTotal_KB}" -lt "1048576" ]; then
+        elif [ "${LBench_Result_SwapUsed_KB}" -lt "1024" ] && [ "${LBench_Result_SwapTotal_KB}" -lt "1048576" ]; then
         LBench_Result_Swap="${LBench_Result_SwapUsed_KB} KB / ${LBench_Result_SwapTotal_MB} MB"
         echo -e " ${Font_Yellow}Swap Usage:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_SwapUsed_KB} KB${Font_Suffix} / ${Font_SkyBlue}${LBench_Result_SwapTotal_MB} MB${Font_Suffix}"
-    elif [ "${LBench_Result_SwapUsed_KB}" -lt "1024" ] && [ "${LBench_Result_SwapTotal_KB}" -lt "1073741824" ]; then
+        elif [ "${LBench_Result_SwapUsed_KB}" -lt "1024" ] && [ "${LBench_Result_SwapTotal_KB}" -lt "1073741824" ]; then
         LBench_Result_Swap="${LBench_Result_SwapUsed_KB} KB / ${LBench_Result_SwapTotal_GB} GB"
         echo -e " ${Font_Yellow}Swap Usage:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_SwapUsed_KB} KB${Font_Suffix} / ${Font_SkyBlue}${LBench_Result_SwapTotal_GB} GB${Font_Suffix}"
-    elif [ "${LBench_Result_SwapUsed_KB}" -lt "1048576" ] && [ "${LBench_Result_SwapTotal_KB}" -lt "1048576" ]; then
+        elif [ "${LBench_Result_SwapUsed_KB}" -lt "1048576" ] && [ "${LBench_Result_SwapTotal_KB}" -lt "1048576" ]; then
         LBench_Result_Swap="${LBench_Result_SwapUsed_MB} MB / ${LBench_Result_SwapTotal_MB} MB"
         echo -e " ${Font_Yellow}Swap Usage:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_SwapUsed_MB} MB${Font_Suffix} / ${Font_SkyBlue}${LBench_Result_SwapTotal_MB} MB${Font_Suffix}"
-    elif [ "${LBench_Result_SwapUsed_KB}" -lt "1048576" ] && [ "${LBench_Result_SwapTotal_KB}" -lt "1073741824" ]; then
+        elif [ "${LBench_Result_SwapUsed_KB}" -lt "1048576" ] && [ "${LBench_Result_SwapTotal_KB}" -lt "1073741824" ]; then
         LBench_Result_Swap="${LBench_Result_SwapUsed_MB} MB / ${LBench_Result_SwapTotal_GB} GB"
         echo -e " ${Font_Yellow}Swap Usage:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_SwapUsed_MB} MB${Font_Suffix} / ${Font_SkyBlue}${LBench_Result_SwapTotal_GB} GB${Font_Suffix}"
     else
@@ -691,13 +686,13 @@ Function_ShowSystemInfo() {
     if [ "${LBench_Result_DiskUsed_KB}" -lt "1000000" ]; then
         LBench_Result_Disk="${LBench_Result_DiskUsed_MB} MB / ${LBench_Result_DiskTotal_MB} MB"
         echo -e " ${Font_Yellow}Disk Usage:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_DiskUsed_MB} MB${Font_Suffix} / ${Font_SkyBlue}${LBench_Result_DiskTotal_MB} MB${Font_Suffix}"
-    elif [ "${LBench_Result_DiskUsed_KB}" -lt "1000000" ] && [ "${LBench_Result_DiskTotal_KB}" -lt "1000000000" ]; then
+        elif [ "${LBench_Result_DiskUsed_KB}" -lt "1000000" ] && [ "${LBench_Result_DiskTotal_KB}" -lt "1000000000" ]; then
         LBench_Result_Disk="${LBench_Result_DiskUsed_MB} MB / ${LBench_Result_DiskTotal_GB} GB"
         echo -e " ${Font_Yellow}Disk Usage:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_DiskUsed_MB} MB${Font_Suffix} / ${Font_SkyBlue}${LBench_Result_DiskTotal_GB} GB${Font_Suffix}"
-    elif [ "${LBench_Result_DiskUsed_KB}" -lt "1000000000" ] && [ "${LBench_Result_DiskTotal_KB}" -lt "1000000000" ]; then
+        elif [ "${LBench_Result_DiskUsed_KB}" -lt "1000000000" ] && [ "${LBench_Result_DiskTotal_KB}" -lt "1000000000" ]; then
         LBench_Result_Disk="${LBench_Result_DiskUsed_GB} GB / ${LBench_Result_DiskTotal_GB} GB"
         echo -e " ${Font_Yellow}Disk Usage:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_DiskUsed_GB} GB${Font_Suffix} / ${Font_SkyBlue}${LBench_Result_DiskTotal_GB} GB${Font_Suffix}"
-    elif [ "${LBench_Result_DiskUsed_KB}" -lt "1000000000" ] && [ "${LBench_Result_DiskTotal_KB}" -ge "1000000000" ]; then
+        elif [ "${LBench_Result_DiskUsed_KB}" -lt "1000000000" ] && [ "${LBench_Result_DiskTotal_KB}" -ge "1000000000" ]; then
         LBench_Result_Disk="${LBench_Result_DiskUsed_GB} GB / ${LBench_Result_DiskTotal_TB} TB"
         echo -e " ${Font_Yellow}Disk Usage:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_DiskUsed_GB} GB${Font_Suffix} / ${Font_SkyBlue}${LBench_Result_DiskTotal_TB} TB${Font_Suffix}"
     else
@@ -797,7 +792,7 @@ Function_MediaUnlockTest_HBONow() {
         if [ "${result}" = "https://play.hbonow.com" ] || [ "${result}" = "https://play.hbonow.com/" ]; then
             echo -n -e "\r HBO Now:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
             LemonBench_Result_MediaUnlockTest_HBONow="Yes"
-        elif [ "${result}" = "http://hbogeo.cust.footprint.net/hbonow/geo.html" ] || [ "${result}" = "http://geocust.hbonow.com/hbonow/geo.html" ]; then
+            elif [ "${result}" = "http://hbogeo.cust.footprint.net/hbonow/geo.html" ] || [ "${result}" = "http://geocust.hbonow.com/hbonow/geo.html" ]; then
             echo -n -e "\r HBO Now:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
             LemonBench_Result_MediaUnlockTest_HBONow="No"
         else
@@ -819,7 +814,7 @@ Function_MediaUnlockTest_BahamutAnime() {
     local tmpresult="$(curl -4 --user-agent "${UA_Browser}" --max-time 30 -fsL 'https://ani.gamer.com.tw/ajax/token.php?adID=89422&sn=14667')"
     if [ "$?" != "0" ]; then
         echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Red}Failed (due to network fail)${Font_Suffix}\n"
-        LemonBench_Result_MediaUnlockTest_BahamutAnime="Failed (due to network fail)" 
+        LemonBench_Result_MediaUnlockTest_BahamutAnime="Failed (due to network fail)"
         return 1
     fi
     local result="$(echo $tmpresult | jq -r .animeSn)"
@@ -830,7 +825,7 @@ Function_MediaUnlockTest_BahamutAnime() {
             LemonBench_Result_MediaUnlockTest_BahamutAnime="Yes"
         else
             echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Red}Failed (due to parse fail)${Font_Suffix}\n"
-            LemonBench_Result_MediaUnlockTest_BahamutAnime="Failed (due to parse fail)"            
+            LemonBench_Result_MediaUnlockTest_BahamutAnime="Failed (due to parse fail)"
         fi
     else
         local result="$(echo $tmpresult | jq -r .error.code)"
@@ -841,11 +836,11 @@ Function_MediaUnlockTest_BahamutAnime() {
                 LemonBench_Result_MediaUnlockTest_BahamutAnime="No"
             else
                 echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Red}Failed (due to parse fail)${Font_Suffix}\n"
-                LemonBench_Result_MediaUnlockTest_BahamutAnime="Failed (due to parse fail)"                 
+                LemonBench_Result_MediaUnlockTest_BahamutAnime="Failed (due to parse fail)"
             fi
         else
             echo -n -e "\r Bahamut Anime:\t\t\t\t${Font_Red}Failed (due to parse fail)${Font_Suffix}\n"
-            LemonBench_Result_MediaUnlockTest_BahamutAnime="Failed (due to parse fail)"    
+            LemonBench_Result_MediaUnlockTest_BahamutAnime="Failed (due to parse fail)"
         fi
     fi
 }
@@ -862,12 +857,12 @@ Function_MediaUnlockTest_BilibiliChinaMainland() {
             if [ "${result}" = "0" ]; then
                 echo -n -e "\r BiliBili China Mainland Only:\t\t${Font_Green}Yes${Font_Suffix}\n"
                 LemonBench_Result_MediaUnlockTest_ChinaMainland="Yes"
-            elif [ "${result}" = "-10403" ]; then
+                elif [ "${result}" = "-10403" ]; then
                 echo -n -e "\r BiliBili China Mainland Only:\t\t${Font_Red}No${Font_Suffix}\n"
                 LemonBench_Result_MediaUnlockTest_ChinaMainland="No"
             else
                 echo -n -e "\r BiliBili China Mainland Only:\t\t${Font_Red}Failed (due to unknown return)${Font_Suffix} ${Font_SkyBlue}(${result})${Font_Suffix}\n"
-                LemonBench_Result_MediaUnlockTest_ChinaMainland="Failed (due to unknown return)" 
+                LemonBench_Result_MediaUnlockTest_ChinaMainland="Failed (due to unknown return)"
             fi
         else
             echo -n -e "\r BiliBili China Mainland Only:\t\t${Font_Red}Failed (due to parse fail)${Font_Suffix}\n"
@@ -875,8 +870,8 @@ Function_MediaUnlockTest_BilibiliChinaMainland() {
         fi
     else
         echo -n -e "\r BiliBili China Mainland Only:\t\t${Font_Red}Failed (due to network fail)${Font_Suffix}\n"
-        LemonBench_Result_MediaUnlockTest_ChinaMainland="Failed (due to network fail)"        
-    fi   
+        LemonBench_Result_MediaUnlockTest_ChinaMainland="Failed (due to network fail)"
+    fi
 }
 
 # 流媒体解锁测试-哔哩哔哩港澳台限定
@@ -891,12 +886,12 @@ Function_MediaUnlockTest_BilibiliHKMCTW() {
             if [ "${result}" = "0" ]; then
                 echo -n -e "\r BiliBili Hongkong/Macau/Taiwan:\t${Font_Green}Yes${Font_Suffix}\n"
                 LemonBench_Result_MediaUnlockTest_BilibiliHKMCTW="Yes"
-            elif [ "${result}" = "-10403" ]; then
+                elif [ "${result}" = "-10403" ]; then
                 echo -n -e "\r BiliBili Hongkong/Macau/Taiwan:\t${Font_Red}No${Font_Suffix}\n"
                 LemonBench_Result_MediaUnlockTest_BilibiliHKMCTW="No"
             else
                 echo -n -e "\r BiliBili Hongkong/Macau/Taiwan:\t${Font_Red}Failed (due to unknown return)${Font_Suffix} ${Font_SkyBlue}(${result})${Font_Suffix}\n"
-                LemonBench_Result_MediaUnlockTest_BilibiliHKMCTW="Failed (due to unknown return)" 
+                LemonBench_Result_MediaUnlockTest_BilibiliHKMCTW="Failed (due to unknown return)"
             fi
         else
             echo -n -e "\r BiliBili Hongkong/Macau/Taiwan:\t${Font_Red}Failed (due to parse fail)${Font_Suffix}\n"
@@ -904,8 +899,8 @@ Function_MediaUnlockTest_BilibiliHKMCTW() {
         fi
     else
         echo -n -e "\r BiliBili Hongkong/Macau/Taiwan:\t${Font_Red}Failed (due to network fail)${Font_Suffix}\n"
-        LemonBench_Result_MediaUnlockTest_BilibiliHKMCTW="Failed (due to network fail)"        
-    fi   
+        LemonBench_Result_MediaUnlockTest_BilibiliHKMCTW="Failed (due to network fail)"
+    fi
 }
 
 # 流媒体解锁测试-哔哩哔哩台湾限定
@@ -920,12 +915,12 @@ Function_MediaUnlockTest_BilibiliTW() {
             if [ "${result}" = "0" ]; then
                 echo -n -e "\r Bilibili Taiwan Only:\t\t\t${Font_Green}Yes${Font_Suffix}\n"
                 LemonBench_Result_MediaUnlockTest_BilibiliTW="Yes"
-            elif [ "${result}" = "-10403" ]; then
+                elif [ "${result}" = "-10403" ]; then
                 echo -n -e "\r Bilibili Taiwan Only:\t\t\t${Font_Red}No${Font_Suffix}\n"
                 LemonBench_Result_MediaUnlockTest_BilibiliTW="No"
             else
                 echo -n -e "\r Bilibili Taiwan Only:\t\t\t${Font_Red}Failed (due to unknown return)${Font_Suffix} ${Font_SkyBlue}(${result})${Font_Suffix}\n"
-                LemonBench_Result_MediaUnlockTest_BilibiliTW="Failed (due to unknown return)" 
+                LemonBench_Result_MediaUnlockTest_BilibiliTW="Failed (due to unknown return)"
             fi
         else
             echo -n -e "\r Bilibili Taiwan Only:\t\t\t${Font_Red}Failed (due to parse fail)${Font_Suffix}\n"
@@ -933,8 +928,8 @@ Function_MediaUnlockTest_BilibiliTW() {
         fi
     else
         echo -n -e "\r 哔哩哔哩-台湾限定:\t${Font_Red}Failed (due to network fail)${Font_Suffix}\n"
-        LemonBench_Result_MediaUnlockTest_BilibiliTW="Failed (due to network fail)"        
-    fi   
+        LemonBench_Result_MediaUnlockTest_BilibiliTW="Failed (due to network fail)"
+    fi
 }
 
 # 流媒体解锁测试-爱奇艺台湾站 (Neta)
@@ -964,7 +959,7 @@ Function_MediaUnlockTest_BilibiliTW() {
 #
 Function_MediaUnlockTest_AbemaTV_IPTest() {
     echo -n -e " Abema.TV:\t\t\t\t\c"
-    # 
+    #
     # 第一轮判断: 判断IP是否为日本IP (通过Akamai)
     # 如果不是日本IP, 后续没必要继续判断了
     local result="$(curl --user-agent "${UA_Browser}" -4 -fsL --write-out %{http_code} --max-time 30 --output /dev/null http://abematv.akamaized.net/region)"
@@ -978,35 +973,35 @@ Function_MediaUnlockTest_AbemaTV_IPTest() {
             if [ "${result1}" = "true" ] && [ "${result2}" = "true" ]; then
                 echo -n -e "\r Abema.TV:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
                 LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Yes"
-            elif [ "${result1}" = "true" ] && [ "${result2}" = "false" ]; then
+                elif [ "${result1}" = "true" ] && [ "${result2}" = "false" ]; then
                 echo -n -e "\r Abema.TV:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
                 LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Yes"
-            elif [ "${result1}" = "false" ] && [ "${result2}" = "true" ]; then
+                elif [ "${result1}" = "false" ] && [ "${result2}" = "true" ]; then
                 echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
                 LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="No"
-            elif [ "${result1}" = "false" ] && [ "${result2}" = "false" ]; then
+                elif [ "${result1}" = "false" ] && [ "${result2}" = "false" ]; then
                 echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
                 LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="No"
             else
                 echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}Failed (Unexpected Return Value)${Font_Suffix}\n"
                 LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Failed (Unexpected Return Value)"
-            fi            
-        elif [ "${result}" = "403" ]; then
+            fi
+            elif [ "${result}" = "403" ]; then
             echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
             LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="No"
-        elif [ "${result}" = "404" ]; then
+            elif [ "${result}" = "404" ]; then
             echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}Failed (HTTP 404 Caught)${Font_Suffix}\n"
             LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Failed (HTTP 404 Caught)"
-        elif [ "${result}" = "000" ]; then
+            elif [ "${result}" = "000" ]; then
             echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
             LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="No"
         else
             echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}Failed (Unexpected HTTP Code)${Font_Suffix} ${Font_SkyBlue}(${result})${Font_Suffix}\n"
-            LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Failed (Unexpected HTTP Code)" 
+            LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Failed (Unexpected HTTP Code)"
         fi
     else
         echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-        LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Failed (Network Connection)"        
+        LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Failed (Network Connection)"
     fi
 }
 
@@ -1019,7 +1014,7 @@ Function_MediaUnlockTest_PCRJP() {
         if [ "$result" = "404" ]; then
             echo -n -e "\r Princess Connect Re:Dive Japan:\t${Font_Green}Yes${Font_Suffix}\n"
             LemonBench_Result_MediaUnlockTest_PCRJP="Yes"
-        elif [ "$result" = "403" ] || [ "$result" = "000" ]; then
+            elif [ "$result" = "403" ] || [ "$result" = "000" ]; then
             echo -n -e "\r Princess Connect Re:Dive Japan:\t${Font_Red}No${Font_Suffix}\n"
             LemonBench_Result_MediaUnlockTest_PCRJP="No"
         else
@@ -1038,7 +1033,7 @@ Function_MediaUnlockTest_BBC() {
         if [ "${result}" = "403" ] || [ "${result}" = "000" ]; then
             echo -n -e "\r BBC:\t\t\t\t\t${Font_Red}No${Font_Suffix}\n"
             LemonBench_Result_MediaUnlockTest_BBC="No"
-        elif [ "${result}" = "404" ]; then
+            elif [ "${result}" = "404" ]; then
             echo -n -e "\r BBC:\t\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
             LemonBench_Result_MediaUnlockTest_BBC="Yes"
         else
@@ -1058,7 +1053,7 @@ Run_Speedtest() {
     mkdir -p ${WorkDir}/result/speedtest/ >/dev/null 2>&1
     if [ "$1" = "default" ]; then
         local result="$(/usr/local/lemonbench/bin/speedtest --accept-license --accept-gdpr --format=json --unit=MiB/s --progress=no 2>/dev/null)"
-    elif [ "$1" = "" ]; then
+        elif [ "$1" = "" ]; then
         echo -n -e "\r $2\t\t${Font_Red}Fail: Invalid Speedtest Server (No servers defined)${Font_Suffix}\n"
         echo -e " $2\t\tFail: Invalid Speedtest Server (No servers defined)" >>${WorkDir}/Speedtest/result.txt
     else
@@ -1092,7 +1087,7 @@ Run_Speedtest() {
         else
             echo -n -e "\r $2\t\t${Font_Red}Fail: ${result}${Font_Suffix}\n"
             echo -e " $2\t\tFail: Unknown Error" >>${WorkDir}/Speedtest/result.txt
-        fi      
+        fi
     fi
 }
 
@@ -1126,39 +1121,29 @@ Function_Speedtest_Full() {
     # 默认测试
     Run_Speedtest "default" "Speedtest Default"
     # 国内测试 - 联通组
-    Run_Speedtest "9484" "China, Jilin CU"
-    Run_Speedtest "17184" "China, Shandong CU"
     Run_Speedtest "13704" "China, Nanjing CU"
     Run_Speedtest "24447" "China, Shanghai CU"
-    Run_Speedtest "4690" "China, Lanzhou CU"
+    Run_Speedtest "4884"  "China, Fujian CU"
     # 国内测试 - 电信组
-    Run_Speedtest "27377" "China, Beijing CT"
-    Run_Speedtest "7509" "China, Hangzhou CT"
+    Run_Speedtest "34115" "China, Tianjin CT"
     Run_Speedtest "26352" "China, Nanjing CT"
     Run_Speedtest "27594" "China, Guangzhou CT"
     Run_Speedtest "23844" "China, Wuhan CT"
     # 国内测试 - 移动组
-    Run_Speedtest "16167" "China, Shenyang CM"
-    Run_Speedtest "4647" "China, Hangzhou CM"
+    Run_Speedtest "25858" "China, Beijing CM"
     Run_Speedtest "15863" "China, Nanning CM"
-    Run_Speedtest "16145" "China, Lanzhou CM"
+    Run_Speedtest "4575"  "China, Chengdu CM"
+    Run_Speedtest "16398" "China, Guiyang CM"
     # 海外测试
-    Run_Speedtest "16176" "Hong Kong, HGC"
-    Run_Speedtest "13538" "Hong Kong, CSL"
-    Run_Speedtest "1536" "Hong Kong, PCCW"
-    Run_Speedtest "6527" "Korea, SK [Kdatacenter]"
-    Run_Speedtest "28910" "Japan, NTT [fdcservers]"
-    Run_Speedtest "21569" "Japan, NTT [i3d]"
+    Run_Speedtest "28912" "Hong Kong, fdcservers"
+    Run_Speedtest "6527" "Korea, Kdatacenter"
+    Run_Speedtest "28910" "Japan, fdcservers"
     Run_Speedtest "6087" "Japan GLBB"
-    Run_Speedtest "24333" "Japan Rakuten"
-    Run_Speedtest "17205" "Taiwan, Seednet"
     Run_Speedtest "4938" "Taiwan, HiNet"
-    Run_Speedtest "11702" "Taiwan, TFN"
-    Run_Speedtest "13623" "Singapore, Singtel"
     Run_Speedtest "7311" "Singapore, M1"
-    Run_Speedtest "367" "Singapore, NME"
-    Run_Speedtest "8864" "United States, Century Link"
-    Run_Speedtest "29623" "United States, Verizon"
+    Run_Speedtest "35057" "UK, London Clouvider"
+    Run_Speedtest "7190"  "US, Los Angeles Sharktech"
+    Run_Speedtest "35055" "US, New York Clouvider"
     # 执行完成, 标记FLAG
     LBench_Flag_FinishSpeedtestFull="1"
     sleep 1
@@ -1285,7 +1270,7 @@ Run_BestTrace6() {
         echo -e "\nTraceroute to $4 (TCP Mode, Max $3 Hop)" >>${WorkDir}/BestTrace/result.txt
         echo -e "============================================================" >>${WorkDir}/BestTrace/result.txt
         /usr/local/lemonbench/bin/besttrace -g en -6 -q 1 -n -T -m $3 $1 >>${WorkDir}/BestTrace/result.txt
-    elif [ "$2" = "icmp" ] || [ "$2" = "ICMP" ]; then
+        elif [ "$2" = "icmp" ] || [ "$2" = "ICMP" ]; then
         echo -e "Traceroute to $4 (ICMP Mode, Max $3 Hop)"
         echo -e "============================================================"
         echo -e "Traceroute to $4 (ICMP Mode, Max $3 Hop)" >>${WorkDir}/BestTrace/result.txt
@@ -1341,125 +1326,93 @@ Function_BestTrace_Full() {
         echo -e "\n -> Traceroute Test (IPV4)\n" >>${WorkDir}/BestTrace/result.txt
         # LemonBench RouteTest 节点列表 Ver 20191112
         # 国内部分
-        Run_BestTrace "123.125.99.1" "${GlobalVar_TracerouteMode}" "50" "China, Beijing CU"
-        Run_BestTrace "180.149.128.1" "${GlobalVar_TracerouteMode}" "50" "China, Beijing CT"
-        Run_BestTrace "211.136.25.153" "${GlobalVar_TracerouteMode}" "50" "China, Beijing CM"
-        Run_BestTrace "58.247.0.49" "${GlobalVar_TracerouteMode}" "50" "China, Shanghai CU"
-        Run_BestTrace "180.153.28.1" "${GlobalVar_TracerouteMode}" "50" "China, Shanghai CT"
-        Run_BestTrace "221.183.55.22" "${GlobalVar_TracerouteMode}" "50" "China, Shanghai CM"
-        Run_BestTrace "210.21.4.130" "${GlobalVar_TracerouteMode}" "50" "China, Guangzhou CU"
-        Run_BestTrace "113.108.209.1" "${GlobalVar_TracerouteMode}" "50" "China, Guangzhou CT"
-        Run_BestTrace "211.139.129.5" "${GlobalVar_TracerouteMode}" "50" "China, Guangzhou CM"
-        Run_BestTrace "210.13.66.238" "${GlobalVar_TracerouteMode}" "50" "China, Shanghai CU AS9929"
-        Run_BestTrace "58.32.0.1" "${GlobalVar_TracerouteMode}" "50" "China, Shanghai CT CN2"
-        Run_BestTrace "14.131.128.1" "${GlobalVar_TracerouteMode}" "50" "China, Beijing Dr.Peng Home Network"
-        Run_BestTrace "211.167.230.100" "${GlobalVar_TracerouteMode}" "50" "China, Beijing Dr.Peng Network IDC Network"
-        Run_BestTrace "202.205.109.205" "${GlobalVar_TracerouteMode}" "50" "China, Beijing CERNET"
-        Run_BestTrace "159.226.254.1" "${GlobalVar_TracerouteMode}" "50" "China, Beijing CSTNET"
-        Run_BestTrace "211.156.140.17" "${GlobalVar_TracerouteMode}" "50" "China, Beijing GCable"
+        Run_BestTrace "123.125.99.1" "${GlobalVar_TracerouteMode}" "20" "China, Beijing CU"
+        Run_BestTrace "180.149.128.1" "${GlobalVar_TracerouteMode}" "20" "China, Beijing CT"
+        Run_BestTrace "211.136.25.153" "${GlobalVar_TracerouteMode}" "20" "China, Beijing CM"
+        Run_BestTrace "58.247.0.49" "${GlobalVar_TracerouteMode}" "20" "China, Shanghai CU"
+        Run_BestTrace "180.153.28.1" "${GlobalVar_TracerouteMode}" "20" "China, Shanghai CT"
+        Run_BestTrace "221.183.55.22" "${GlobalVar_TracerouteMode}" "20" "China, Shanghai CM"
+        Run_BestTrace "210.21.4.130" "${GlobalVar_TracerouteMode}" "20" "China, Guangzhou CU"
+        Run_BestTrace "113.108.209.1" "${GlobalVar_TracerouteMode}" "20" "China, Guangzhou CT"
+        Run_BestTrace "211.139.129.5" "${GlobalVar_TracerouteMode}" "20" "China, Guangzhou CM"
+        Run_BestTrace "210.13.66.238" "${GlobalVar_TracerouteMode}" "20" "China, Shanghai CU AS9929"
+        Run_BestTrace "58.32.0.1" "${GlobalVar_TracerouteMode}" "20" "China, Shanghai CT CN2"
+        Run_BestTrace "202.205.109.205" "${GlobalVar_TracerouteMode}" "20" "China, Beijing CERNET"
+        Run_BestTrace "159.226.254.1" "${GlobalVar_TracerouteMode}" "20" "China, Beijing CSTNET"
+        Run_BestTrace "211.156.140.17" "${GlobalVar_TracerouteMode}" "20" "China, Beijing GCable"
         # 香港部分
-        Run_BestTrace "203.160.95.218" "${GlobalVar_TracerouteMode}" "50" "China, Hongkong CU"
-        Run_BestTrace "203.215.232.173" "${GlobalVar_TracerouteMode}" "50" "China, Hongkong CT"
-        Run_BestTrace "203.8.25.187" "${GlobalVar_TracerouteMode}" "50" "China, Hongkong CT CN2"
-        Run_BestTrace "203.142.105.9" "${GlobalVar_TracerouteMode}" "50" "China, Hongkong CM"
-        Run_BestTrace "218.188.104.30" "${GlobalVar_TracerouteMode}" "50" "China, Hongkong HGC"
-        Run_BestTrace "210.6.23.239" "${GlobalVar_TracerouteMode}" "50" "China, Hongkong HKBN"
-        Run_BestTrace "202.85.125.60" "${GlobalVar_TracerouteMode}" "50" "China, Hongkong PCCW"
-        Run_BestTrace "202.123.76.239" "${GlobalVar_TracerouteMode}" "50" "China, Hongkong TGT"
-        Run_BestTrace "59.152.252.242" "${GlobalVar_TracerouteMode}" "50" "China, Hongkong WTT"
+        Run_BestTrace "218.188.104.30" "${GlobalVar_TracerouteMode}" "20" "China, Hongkong HGC"
+        Run_BestTrace "210.6.23.1" "${GlobalVar_TracerouteMode}" "20" "China, Hongkong HKBN"
+        Run_BestTrace "202.85.125.60" "${GlobalVar_TracerouteMode}" "20" "China, Hongkong PCCW"
+        Run_BestTrace "202.123.76.239" "${GlobalVar_TracerouteMode}" "20" "China, Hongkong TGT"
+        Run_BestTrace "59.152.252.242" "${GlobalVar_TracerouteMode}" "20" "China, Hongkong WTT"
         # 新加坡部分
-        Run_BestTrace "203.215.233.1" "${GlobalVar_TracerouteMode}" "50" "Singapore, China CT"
-        Run_BestTrace "183.91.61.1" "${GlobalVar_TracerouteMode}" "50" "Singapore, China CT CN2"
-        Run_BestTrace "118.201.1.11" "${GlobalVar_TracerouteMode}" "50" "Singapore, Singtel"
-        Run_BestTrace "203.116.46.33" "${GlobalVar_TracerouteMode}" "50" "Singapore, StarHub"
-        Run_BestTrace "118.189.184.1" "${GlobalVar_TracerouteMode}" "50" "Singapore, M1"
-        Run_BEstTrace "118.189.38.17" "${GlobalVar_TracerouteMode}" "50" "Singapore, M1 GamePro"
-        Run_BestTrace "13.228.0.251" "${GlobalVar_TracerouteMode}" "50" "Singapore, AWS"
+        Run_BestTrace "118.201.1.11" "${GlobalVar_TracerouteMode}" "20" "Singapore, Singtel"
+        Run_BestTrace "203.116.46.33" "${GlobalVar_TracerouteMode}" "20" "Singapore, StarHub"
+        Run_BestTrace "103.1.138.182" "${GlobalVar_TracerouteMode}" "20" "Singapore, M1"
+        Run_BEstTrace "118.189.38.17" "${GlobalVar_TracerouteMode}" "20" "Singapore, M1 GamePro"
         # 日本部分
-        Run_BestTrace "61.213.155.84" "${GlobalVar_TracerouteMode}" "50" "Japan, NTT"
-        Run_BestTrace "202.232.15.70" "${GlobalVar_TracerouteMode}" "50" "Japan, IIJ"
-        Run_BestTrace "210.175.32.26" "${GlobalVar_TracerouteMode}" "50" "Japan, SoftBank"
-        Run_BestTrace "106.162.242.108" "${GlobalVar_TracerouteMode}" "50" "Japan, KDDI"
-        Run_BestTrace "203.215.236.3" "${GlobalVar_TracerouteMode}" "50" "Japan, China CT"
-        Run_BestTrace "202.55.27.4" "${GlobalVar_TracerouteMode}" "50" "Japan, China CT CN2"
-        Run_BestTrace "13.112.63.251" "${GlobalVar_TracerouteMode}" "50" "Japan, Amazon AWS"
+        Run_BestTrace "61.113.104.9" "${GlobalVar_TracerouteMode}" "20" "Japan Tokyo, NTT"
+        Run_BestTrace "202.232.15.70" "${GlobalVar_TracerouteMode}" "20" "Japan, IIJ"
+        Run_BestTrace "210.175.32.26" "${GlobalVar_TracerouteMode}" "20" "Japan, SoftBank"
+        Run_BestTrace "50.7.159.4" "${GlobalVar_TracerouteMode}" "20" "Japan, fdcservers"
         # 韩国部分
-        Run_BestTrace "210.114.41.101" "${GlobalVar_TracerouteMode}" "50" "South Korea, KT"
-        Run_BestTrace "175.122.253.62 " "${GlobalVar_TracerouteMode}" "50" "South Korea, SK"
-        Run_BestTrace "211.174.62.44" "${GlobalVar_TracerouteMode}" "50" "South Korea, LG"
-        Run_BestTrace "218.185.246.3" "${GlobalVar_TracerouteMode}" "50" "South Korea, China CT CN2"
-        Run_BestTrace "13.124.63.251" "${GlobalVar_TracerouteMode}" "50" "South Korea, Amazon AWS"
+        Run_BestTrace "210.114.41.101" "${GlobalVar_TracerouteMode}" "20" "South Korea, KT"
+        Run_BestTrace "175.122.253.62 " "${GlobalVar_TracerouteMode}" "20" "South Korea, SK"
+        Run_BestTrace "211.174.62.44" "${GlobalVar_TracerouteMode}" "20" "South Korea, LG"
         # 台湾部分
-        Run_BestTrace "202.133.242.116" "${GlobalVar_TracerouteMode}" "50" "China, Taiwan Chief"
-        Run_BestTrace "210.200.69.90" "${GlobalVar_TracerouteMode}" "50" "China, Taiwan APTG"
-        Run_BestTrace "203.75.129.162" "${GlobalVar_TracerouteMode}" "50" "China, Taiwan CHT"
-        Run_BestTrace "219.87.66.3" "${GlobalVar_TracerouteMode}" "50" "China, Taiwan TFN"
-        Run_BestTrace "211.73.144.38" "${GlobalVar_TracerouteMode}" "50" "China,Taiwan FET"
-        Run_BestTrace "61.63.0.102" "${GlobalVar_TracerouteMode}" "50" "China, Taiwan KBT"
-        Run_BestTrace "103.31.196.203" "${GlobalVar_TracerouteMode}" "50" "China, Taiwan TAIFO"
+        Run_BestTrace "202.133.242.1" "${GlobalVar_TracerouteMode}" "20" "China, Taiwan Chief"
+        Run_BestTrace "210.200.69.90" "${GlobalVar_TracerouteMode}" "20" "China, Taiwan APTG"
+        Run_BestTrace "203.75.129.162" "${GlobalVar_TracerouteMode}" "20" "China, Taiwan CHT"
         # 美国部分
-        Run_BestTrace "218.30.33.17" "${GlobalVar_TracerouteMode}" "50" "United States, Los Angeles China CT"
-        Run_BestTrace "66.102.252.100" "${GlobalVar_TracerouteMode}" "50" "United States, Los Angeles China CT CN2"
-        Run_BestTrace "63.218.42.81" "${GlobalVar_TracerouteMode}" "50" "United States, Los Angeles PCCW"
-        Run_BestTrace "66.220.18.42" "${GlobalVar_TracerouteMode}" "50" "United States, Los Angeles HE"
-        Run_BestTrace "173.205.77.98" "${GlobalVar_TracerouteMode}" "50" "United States, Los Angeles GTT"
-        Run_BestTrace "12.169.215.33" "${GlobalVar_TracerouteMode}" "50" "United States, San Fransico ATT"
-        Run_BestTrace "66.198.181.100" "${GlobalVar_TracerouteMode}" "50" "United States, New York TATA"
-        Run_BestTrace "218.30.33.17" "${GlobalVar_TracerouteMode}" "50" "United States, San Jose China CT"
-        Run_BestTrace "23.11.26.62" "${GlobalVar_TracerouteMode}" "50" "United States, San Jose NTT"
-        Run_BestTrace "72.52.104.74" "${GlobalVar_TracerouteMode}" "50" "United States, Fremont HE"
-        Run_BestTrace "205.216.62.38" "${GlobalVar_TracerouteMode}" "50" "United States, Las Vegas Level3"
-        Run_BestTrace "64.125.191.31" "${GlobalVar_TracerouteMode}" "50" "United States, San Jose ZAYO"
-        Run_BestTrace "149.127.109.166" "${GlobalVar_TracerouteMode}" "50" "United States, Ashburn Cogentco"
+        Run_BestTrace "218.30.33.17" "${GlobalVar_TracerouteMode}" "20" "United States, Los Angeles China CT"
+        Run_BestTrace "63.218.42.81" "${GlobalVar_TracerouteMode}" "20" "United States, Los Angeles PCCW"
+        Run_BestTrace "66.220.18.42" "${GlobalVar_TracerouteMode}" "20" "United States, Los Angeles HE"
+        Run_BestTrace "12.169.215.33" "${GlobalVar_TracerouteMode}" "20" "United States, San Fransico ATT"
+        Run_BestTrace "24.24.52.1" "${GlobalVar_TracerouteMode}" "20" "United States, New York Spectrum"
         # 欧洲部分
-        Run_BestTrace "80.146.191.1" "${GlobalVar_TracerouteMode}" "50" "German, Telekom"
-        Run_BestTrace "82.113.108.25" "${GlobalVar_TracerouteMode}" "50" "German, Frankfurt O2"
-        Run_BestTrace "139.7.146.11" "${GlobalVar_TracerouteMode}" "50" "German, Frankfurt Vodafone"
-        Run_BestTrace "118.85.205.101" "${GlobalVar_TracerouteMode}" "50" "German, Frankfurt China CT"
-        Run_BestTrace "5.10.138.33" "${GlobalVar_TracerouteMode}" "50" "German, Frankfurt China CT CN2"
-        Run_BestTrace "213.200.65.70" "${GlobalVar_TracerouteMode}" "50" "German, Frankfurt GTT"
-        Run_BestTrace "212.20.150.5" "${GlobalVar_TracerouteMode}" "50" "German, FrankfurtCogentco"
-        Run_BestTrace "194.62.232.211" "${GlobalVar_TracerouteMode}" "50" "United Kingdom, Vodafone"
-        Run_BestTrace "213.121.43.24" "${GlobalVar_TracerouteMode}" "50" "United Kingdom， BT"
-        Run_BestTrace "80.231.131.34" "${GlobalVar_TracerouteMode}" "50" "United Kingdom, London TATA"
-        Run_BestTrace "118.85.205.181" "${GlobalVar_TracerouteMode}" "50" "Russia, China CT"
-        Run_BestTrace "185.75.173.17" "${GlobalVar_TracerouteMode}" "50" "Russia, China CT CN2"
-        Run_BestTrace "87.226.162.77" "${GlobalVar_TracerouteMode}" "50" "Russia, Moscow RT"
-        Run_BestTrace "217.150.32.2" "${GlobalVar_TracerouteMode}" "50" "Russia, Moscow TTK"
-        Run_BestTrace "195.34.32.71" "${GlobalVar_TracerouteMode}" "50" "Russia, Moscow MTS"
+        Run_BestTrace "80.146.191.1" "${GlobalVar_TracerouteMode}" "20" "German, Telekom"
+        Run_BestTrace "82.113.108.25" "${GlobalVar_TracerouteMode}" "20" "German, Frankfurt O2"
+        Run_BestTrace "139.7.146.11" "${GlobalVar_TracerouteMode}" "20" "German, Frankfurt Vodafone"
+        Run_BestTrace "213.200.65.70" "${GlobalVar_TracerouteMode}" "20" "German, Frankfurt GTT"
+        Run_BestTrace "212.20.120.5" "${GlobalVar_TracerouteMode}" "20" "German, FrankfurtCogentco"
+        Run_BestTrace "194.62.232.211" "${GlobalVar_TracerouteMode}" "20" "United Kingdom, Vodafone"
+        Run_BestTrace "213.121.43.24" "${GlobalVar_TracerouteMode}" "20" "United Kingdom, BT"
+        Run_BestTrace "87.226.162.77" "${GlobalVar_TracerouteMode}" "20" "Russia, Moscow RT"
+        Run_BestTrace "195.34.32.71" "${GlobalVar_TracerouteMode}" "20" "Russia, Moscow MTS"
     fi
     if [ "${LBench_Result_NetworkStat}" = "ipv6only" ] || [ "${LBench_Result_NetworkStat}" = "dualstack" ] || [ "${LBench_Result_NetworkStat}" = "unknown" ]; then
         echo -e "\n ${Font_Yellow}-> Traceroute Test (IPV6)${Font_Suffix}\n"
         echo -e "\n -> Traceroute Test (IPV6)\n" >>${WorkDir}/BestTrace/result.txt
         # 国内部分
-        Run_BestTrace6 "2408:80f0:4100:2005::3" "ICMP" "50" "China, Beijing CU IPV6"
-        Run_BestTrace6 "2400:da00:2::29" "ICMP" "50" "China, Beijing CT IPV6"
-        Run_BestTrace6 "2409:8089:1020:50ff:1000::fd01" "ICMP" "50" "China, Beijing CM IPV6"
-        Run_BestTrace6 "2408:8000:9000:20e6::b7" "ICMP" "50" "China, Shanghai CU IPV6"
-        Run_BestTrace6 "240e:18:10:a01::1" "ICMP" "50" "China, Shanghai CT IPV6"
-        Run_BestTrace6 "2409:801e:5c03:2000::207" "ICMP" "50" "China, Shanghai CM IPV6"
-        Run_BestTrace6 "2408:8001:3011:310::3" "ICMP" "50" "China, Guangzhou CU IPV6"
-        Run_BestTrace6 "240e:ff:e02c:1:21::" "ICMP" "50" "China, Guangzhou CT IPV6"
-        Run_BestTrace6 "2409:8057:5c00:30::6" "ICMP" "50" "China, Guangzhou CM IPV6"
-        Run_BestTrace6 "2403:8880:400f::2" "ICMP" "50" "China, Beijing Dr.Peng IPV6"
-        Run_BestTrace6 "2001:da8:a0:1001::1" "ICMP" "50" "China, Beijing CERNET2 IPV6"
-        Run_BestTrace6 "2400:dd00:0:37::213" "ICMP" "50" "China, Beijing CSTNET IPV6"
+        Run_BestTrace6 "2408:80f0:4100:2005::3" "ICMP" "20" "China, Beijing CU IPV6"
+        Run_BestTrace6 "2400:da00:2::29" "ICMP" "20" "China, Beijing CT IPV6"
+        Run_BestTrace6 "2409:8089:1020:50ff:1000::fd01" "ICMP" "20" "China, Beijing CM IPV6"
+        Run_BestTrace6 "2408:8000:9000:20e6::b7" "ICMP" "20" "China, Shanghai CU IPV6"
+        Run_BestTrace6 "240e:18:10:a01::1" "ICMP" "20" "China, Shanghai CT IPV6"
+        Run_BestTrace6 "2409:801e:5c03:2000::207" "ICMP" "20" "China, Shanghai CM IPV6"
+        Run_BestTrace6 "2408:8001:3011:310::3" "ICMP" "20" "China, Guangzhou CU IPV6"
+        Run_BestTrace6 "240e:ff:e02c:1:21::" "ICMP" "20" "China, Guangzhou CT IPV6"
+        Run_BestTrace6 "2409:8057:5c00:30::6" "ICMP" "20" "China, Guangzhou CM IPV6"
+        Run_BestTrace6 "2403:8880:400f::2" "ICMP" "20" "China, Beijing Dr.Peng IPV6"
+        Run_BestTrace6 "2001:da8:a0:1001::1" "ICMP" "20" "China, Beijing CERNET2 IPV6"
+        Run_BestTrace6 "2400:dd00:0:37::213" "ICMP" "20" "China, Beijing CSTNET IPV6"
         # 香港部分
-        Run_BestTrace6 "2001:7fa:0:1::ca28:a1a9" "ICMP" "50" "China, Hongkong HKIX IPV6"
-        Run_BestTrace6 "2001:470:0:490::2" "ICMP" "50" "China, Hongkong HE IPV6"
+        Run_BestTrace6 "2001:7fa:0:1::ca28:a1a9" "ICMP" "20" "China, Hongkong HKIX IPV6"
+        Run_BestTrace6 "2001:470:0:490::2" "ICMP" "20" "China, Hongkong HE IPV6"
         # 美国部分
-        Run_BestTrace6 "2001:470:1:ff::1" "ICMP" "50" "United States, San Jose HE IPV6"
-        Run_BestTrace6 "2001:418:0:5000::1026" "ICMP" "50" "United States, Chicago NTT IPV6"
-        Run_BestTrace6 "2001:2000:3080:1e96::2" "ICMP" "50" "United States, Los Angeles Telia IPV6"
-        Run_BestTrace6 "2001:668:0:3:ffff:0:d8dd:9d5a" "ICMP" "50" "United States, Los Angeles GTT IPV6"
-        Run_BestTrace6 "2600:0:1:1239:144:228:241:71" "ICMP" "50" "United States, Kansas City Sprint IPV6"
-        Run_BestTrace6 "2600:80a:2::15" "ICMP" "50" "United States, Los Angeles Verizon IPV6"
-        Run_BestTrace6 "2001:550:0:1000::9a36:4215" "ICMP" "50" "United Status, Ashburn Cogentco IPV6"
-        Run_BestTrace6 "2001:1900:2100::2eb5" "ICMP" "50" "United States, San Jose Level3 IPV6"
-        Run_BestTrace6 "2001:438:ffff::407d:d6a" "ICMP" "50" "United States, Seattle Zayo IPV6"
+        Run_BestTrace6 "2001:470:1:ff::1" "ICMP" "20" "United States, San Jose HE IPV6"
+        Run_BestTrace6 "2001:418:0:5000::1026" "ICMP" "20" "United States, Chicago NTT IPV6"
+        Run_BestTrace6 "2001:2000:3080:1e96::2" "ICMP" "20" "United States, Los Angeles Telia IPV6"
+        Run_BestTrace6 "2001:668:0:3:ffff:0:d8dd:9d5a" "ICMP" "20" "United States, Los Angeles GTT IPV6"
+        Run_BestTrace6 "2600:0:1:1239:144:228:241:71" "ICMP" "20" "United States, Kansas City Sprint IPV6"
+        Run_BestTrace6 "2600:80a:2::15" "ICMP" "20" "United States, Los Angeles Verizon IPV6"
+        Run_BestTrace6 "2001:550:0:1000::9a36:4215" "ICMP" "20" "United Status, Ashburn Cogentco IPV6"
+        Run_BestTrace6 "2001:1900:2100::2eb5" "ICMP" "20" "United States, San Jose Level3 IPV6"
+        Run_BestTrace6 "2001:438:ffff::407d:d6a" "ICMP" "20" "United States, Seattle Zayo IPV6"
         # 欧洲部分
-        Run_BestTrace6 "2001:470:0:349::1" "ICMP" "50" "France, Paris HE IPV6"
-        Run_BestTrace6 "2001:728:0:5000::6f6" "ICMP" "50" "German, Frankfurt NTT IPV6"
+        Run_BestTrace6 "2001:470:0:349::1" "ICMP" "20" "France, Paris HE IPV6"
+        Run_BestTrace6 "2001:728:0:5000::6f6" "ICMP" "20" "German, Frankfurt NTT IPV6"
     fi
     # 执行完成, 标记FLAG
     LBench_Flag_FinishBestTraceFull="1"
@@ -1528,7 +1481,7 @@ Run_SysBench_CPU() {
     if [ "$1" = "1" ]; then
         echo -e "\r ${Font_Yellow}$4: ${Font_Suffix}\t\t${Font_SkyBlue}${ResultScore}${Font_Suffix} ${Font_Yellow}Scores${Font_Suffix}"
         echo -e " $4:\t\t\t${ResultScore} Scores" >>${WorkDir}/SysBench/CPU/result.txt
-    elif [ "$1" -ge "2" ]; then
+        elif [ "$1" -ge "2" ]; then
         echo -e "\r ${Font_Yellow}$4: ${Font_Suffix}\t\t${Font_SkyBlue}${ResultScore}${Font_Suffix} ${Font_Yellow}Scores${Font_Suffix}"
         echo -e " $4:\t\t${ResultScore} Scores" >>${WorkDir}/SysBench/CPU/result.txt
     fi
@@ -1541,7 +1494,7 @@ Function_SysBench_CPU_Fast() {
     Run_SysBench_CPU "1" "5" "1" "1 Thread Test"
     if [ "${LBench_Result_CPUThreadNumber}" -ge "2" ]; then
         Run_SysBench_CPU "${LBench_Result_CPUThreadNumber}" "5" "1" "${LBench_Result_CPUThreadNumber} Threads Test"
-    elif [ "${LBench_Result_CPUProcessorNumber}" -ge "2" ]; then
+        elif [ "${LBench_Result_CPUProcessorNumber}" -ge "2" ]; then
         Run_SysBench_CPU "${LBench_Result_CPUProcessorNumber}" "5" "1" "${LBench_Result_CPUProcessorNumber} Threads Test"
     fi
     # 完成FLAG
@@ -1555,7 +1508,7 @@ Function_SysBench_CPU_Full() {
     Run_SysBench_CPU "1" "50" "3" "1 Thread Test"
     if [ "${LBench_Result_CPUThreadNumber}" -ge "2" ]; then
         Run_SysBench_CPU "${LBench_Result_CPUThreadNumber}" "50" "3" "${LBench_Result_CPUThreadNumber} Threads Test"
-    elif [ "${LBench_Result_CPUProcessorNumber}" -ge "2" ]; then
+        elif [ "${LBench_Result_CPUProcessorNumber}" -ge "2" ]; then
         Run_SysBench_CPU "${LBench_Result_CPUProcessorNumber}" "50" "3" "${LBench_Result_CPUProcessorNumber} Threads Test"
     fi
     # 完成FLAG
@@ -1614,7 +1567,7 @@ Run_SysBench_Memory() {
     # 1线程的测试结果写入临时变量，方便与后续的多线程变量做对比
     if [ "$1" = "1" ] && [ "$4" = "read" ]; then
         LBench_Result_MemoryReadSpeedSingle="${ResultSpeed}"
-    elif [ "$1" = "1" ] &&[ "$4" = "write" ]; then
+        elif [ "$1" = "1" ] &&[ "$4" = "write" ]; then
         LBench_Result_MemoryWriteSpeedSingle="${ResultSpeed}"
     fi
     if [ "${MultiThread_Flag}" = "1" ]; then
@@ -1623,7 +1576,7 @@ Run_SysBench_Memory() {
             LBench_Result_MemoryReadSpeedMulti="${ResultSpeed}"
             local readmultiple="$(echo "${LBench_Result_MemoryReadSpeedMulti} ${LBench_Result_MemoryReadSpeedSingle}" | awk '{printf "%.2f", $1/$2}')"
             echo -e "\r ${Font_Yellow}$6:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_MemoryReadSpeedMulti}${Font_Suffix} ${Font_Yellow}MB/s${Font_Suffix} (${readmultiple} x)"
-        elif [ "$1" -ge "2" ] && [ "$4" = "write" ]; then
+            elif [ "$1" -ge "2" ] && [ "$4" = "write" ]; then
             LBench_Result_MemoryWriteSpeedMulti="${ResultSpeed}"
             local writemultiple="$(echo "${LBench_Result_MemoryWriteSpeedMulti} ${LBench_Result_MemoryWriteSpeedSingle}" | awk '{printf "%.2f", $1/$2}')"
             echo -e "\r ${Font_Yellow}$6:${Font_Suffix}\t\t${Font_SkyBlue}${LBench_Result_MemoryWriteSpeedMulti}${Font_Suffix} ${Font_Yellow}MB/s${Font_Suffix} (${writemultiple} x)"
@@ -1631,7 +1584,7 @@ Run_SysBench_Memory() {
     else
         if [ "$4" = "read" ]; then
             echo -e "\r ${Font_Yellow}$6:${Font_Suffix}\t\t${Font_SkyBlue}${ResultSpeed}${Font_Suffix} ${Font_Yellow}MB/s${Font_Suffix}"
-        elif [ "$4" = "write" ]; then
+            elif [ "$4" = "write" ]; then
             echo -e "\r ${Font_Yellow}$6:${Font_Suffix}\t\t${Font_SkyBlue}${ResultSpeed}${Font_Suffix} ${Font_Yellow}MB/s${Font_Suffix}"
         fi
     fi
@@ -1755,26 +1708,26 @@ Function_GenerateResult_SystemInfo() {
         echo -e " OS Release:\t\t${LBench_Result_OSReleaseFullName}" >>$rfile
         if [ "${Flag_DymanicCPUFreqDetected}" = "1" ]; then
             echo -e " CPU Model:\t\t${LBench_Result_CPUModelName}  ${LBench_Result_CPUFreqMinGHz}~${LBench_Result_CPUFreqMaxGHz} GHz" >>$rfile
-        elif [ "${Flag_DymanicCPUFreqDetected}" = "0" ]; then
+            elif [ "${Flag_DymanicCPUFreqDetected}" = "0" ]; then
             echo -e " CPU Model:\t\t${LBench_Result_CPUModelName}  ${LBench_Result_CPUFreqGHz} GHz" >>$rfile
         fi
         echo -e " CPU Cache Size:\t${LBench_Result_CPUCacheSize}" >>$rfile
         if [ "${LBench_Result_CPUIsPhysical}" = "1" ]; then
             if [ "${LBench_Result_CPUPhysicalNumber}" -eq "1" ]; then
                 echo -e " CPU Number:\t\t${LBench_Result_CPUPhysicalNumber} Physical CPU, ${LBench_Result_CPUCoreNumber} Cores, ${LBench_Result_CPUThreadNumber} Threads" >>$rfile
-            elif [ "${LBench_Result_CPUPhysicalNumber}" -ge "2" ]; then
+                elif [ "${LBench_Result_CPUPhysicalNumber}" -ge "2" ]; then
                 echo -e " CPU Number:\t\t${LBench_Result_CPUPhysicalNumber} Physical CPUs, ${LBench_Result_CPUCoreNumber} Cores/CPU, ${LBench_Result_CPUSiblingsNumber} Thread)/CPU (Total ${LBench_Result_CPUTotalCoreNumber} Cores, ${LBench_Result_CPUProcessorNumber} Threads)" >>$rfile
-            elif [ "${LBench_Result_CPUThreadNumber}" = "0" ] && [ "${LBench_Result_CPUProcessorNumber} " -ge "1" ]; then
+                elif [ "${LBench_Result_CPUThreadNumber}" = "0" ] && [ "${LBench_Result_CPUProcessorNumber} " -ge "1" ]; then
                 echo -e " CPU Number:\t\t${LBench_Result_CPUProcessorNumber} Cores" >>$rfile
             fi
             if [ "${LBench_Result_CPUVirtualization}" = "1" ]; then
                 echo -e " VirtReady:\t\tYes (Based on ${LBench_Result_CPUVirtualizationType})" >>$rfile
-            elif [ "${LBench_Result_CPUVirtualization}" = "2" ]; then
+                elif [ "${LBench_Result_CPUVirtualization}" = "2" ]; then
                 echo -e " VirtReady:\t\tYes (Nested Virtualization)" >>$rfile
             else
                 echo -e " VirtReady:\t\t${Font_SkyRed}No" >>$rfile
             fi
-        elif [ "${Var_VirtType}" = "openvz" ]; then
+            elif [ "${Var_VirtType}" = "openvz" ]; then
             echo -e " CPU Number:\t\t${LBench_Result_CPUThreadNumber} vCPU (${LBench_Result_CPUCoreNumber} Host Core(s)/Thread(s))" >>$rfile
         else
             echo -e " CPU Number:\t\t${LBench_Result_CPUThreadNumber} vCPU" >>$rfile
@@ -1785,13 +1738,13 @@ Function_GenerateResult_SystemInfo() {
         if [ "${LBench_Result_DiskUsed_KB}" -lt "1000000" ]; then
             LBench_Result_Disk="${LBench_Result_DiskUsed_MB} MB / ${LBench_Result_DiskTotal_MB} MB"
             echo -e " Disk Usage:\t\t${LBench_Result_DiskUsed_MB} MB / ${LBench_Result_DiskTotal_MB} MB" >>$rfile
-        elif [ "${LBench_Result_DiskUsed_KB}" -lt "1000000" ] && [ "${LBench_Result_DiskTotal_KB}" -lt "1000000000" ]; then
+            elif [ "${LBench_Result_DiskUsed_KB}" -lt "1000000" ] && [ "${LBench_Result_DiskTotal_KB}" -lt "1000000000" ]; then
             LBench_Result_Disk="${LBench_Result_DiskUsed_MB} MB / ${LBench_Result_DiskTotal_GB} GB"
             echo -e " Disk Usage:\t\t${LBench_Result_DiskUsed_MB} MB / ${LBench_Result_DiskTotal_GB} GB" >>$rfile
-        elif [ "${LBench_Result_DiskUsed_KB}" -lt "1000000000" ] && [ "${LBench_Result_DiskTotal_KB}" -lt "1000000000" ]; then
+            elif [ "${LBench_Result_DiskUsed_KB}" -lt "1000000000" ] && [ "${LBench_Result_DiskTotal_KB}" -lt "1000000000" ]; then
             LBench_Result_Disk="${LBench_Result_DiskUsed_GB} GB / ${LBench_Result_DiskTotal_GB} GB"
             echo -e " Disk Usage:\t\t${LBench_Result_DiskUsed_GB} GB / ${LBench_Result_DiskTotal_GB} GB" >>$rfile
-        elif [ "${LBench_Result_DiskUsed_KB}" -lt "1000000000" ] && [ "${LBench_Result_DiskTotal_KB}" -ge "1000000000" ]; then
+            elif [ "${LBench_Result_DiskUsed_KB}" -lt "1000000000" ] && [ "${LBench_Result_DiskTotal_KB}" -ge "1000000000" ]; then
             LBench_Result_Disk="${LBench_Result_DiskUsed_GB} GB / ${LBench_Result_DiskTotal_TB} TB"
             echo -e " Disk Usage:\t\t${LBench_Result_DiskUsed_GB} GB / ${LBench_Result_DiskTotal_TB} TB" >>$rfile
         else
@@ -1888,6 +1841,14 @@ Function_GenerateResult_Speedtest() {
     fi
 }
 
+Function_GenerateResult_Wtrace() {
+    sleep 0.1
+    if [ -f "${WorkDir}/Wtrace/result.txt" ]; then
+        cp -f ${WorkDir}/Wtrace/result.txt ${WorkDir}/result/08-besttrace.result
+    fi
+}
+
+
 Function_GenerateResult_BestTrace() {
     sleep 0.1
     if [ -f "${WorkDir}/BestTrace/result.txt" ]; then
@@ -1906,8 +1867,6 @@ Function_GenerateResult_Footer() {
     sleep 0.1
     local rfile="${WorkDir}/result/99-footer.result"
     echo -e "\nGenerated by LemonBench on $(date -u "+%Y-%m-%dT%H:%M:%SZ") Version ${BuildTime}\n" >>$rfile
-    # 恰饭时间！（雾
-    echo -e "[AD] 高质量美西CN2 GIA with ARIN IP (可直接解锁常见流媒体)，1核心/2G内存/15G SSD/1IP/1TB单向流量\n季付仅需588元/季度，年付仅需1899元/年，做站理想之选！\n使用优惠码 BW9K1IPZXN 即刻享受优惠价格！ \n购买传送门： http://ilemonra.in/HKSSLaxGIAPromo" >>$rfile
     echo -e " \n"  >>$rfile
 }
 
@@ -1918,14 +1877,14 @@ Check_Virtwhat() {
         if [ "${Var_OSRelease}" = "centos" ] || [ "${Var_OSRelease}" = "rhel" ]; then
             echo -e "${Msg_Warning}Virt-What Module not found, Installing ..."
             yum -y install virt-what
-        elif [ "${Var_OSRelease}" = "ubuntu" ] || [ "${Var_OSRelease}" = "debian" ]; then
+            elif [ "${Var_OSRelease}" = "ubuntu" ] || [ "${Var_OSRelease}" = "debian" ]; then
             echo -e "${Msg_Warning}Virt-What Module not found, Installing ..."
             apt-get update
             apt-get install -y virt-what dmidecode
-        elif [ "${Var_OSRelease}" = "fedora" ]; then
+            elif [ "${Var_OSRelease}" = "fedora" ]; then
             echo -e "${Msg_Warning}Virt-What Module not found, Installing ..."
             dnf -y install virt-what
-        elif [ "${Var_OSRelease}" = "alpinelinux" ]; then
+            elif [ "${Var_OSRelease}" = "alpinelinux" ]; then
             echo -e "${Msg_Warning}Virt-What Module not found, Installing ..."
             apk update
             apk add virt-what
@@ -1961,9 +1920,9 @@ Check_Speedtest_GetComponent() {
     SystemInfo_GetSystemBit
     if [ "${LBench_Result_SystemBit_Full}" = "amd64" ]; then
         local DownloadSrc="https://raindrop.ilemonrain.com/LemonBench/include/Speedtest/1.0.0.2/speedtest-amd64.tar.gz"
-    elif [ "${LBench_Result_SystemBit_Full}" = "i386" ]; then
+        elif [ "${LBench_Result_SystemBit_Full}" = "i386" ]; then
         local DownloadSrc="https://raindrop.ilemonrain.com/LemonBench/include/Speedtest/1.0.0.2/speedtest-i386.tar.gz"
-    elif [ "${LBench_Result_SystemBit_Full}" = "arm" ]; then
+        elif [ "${LBench_Result_SystemBit_Full}" = "arm" ]; then
         local DownloadSrc="https://raindrop.ilemonrain.com/LemonBench/include/Speedtest/1.0.0.2/speedtest-arm.tar.gz"
     else
         local DownloadSrc="https://raindrop.ilemonrain.com/LemonBench/include/Speedtest/1.0.0.2/speedtest-i386.tar.gz"
@@ -1984,7 +1943,7 @@ Check_Speedtest_GetComponent() {
         echo -e "${Msg_Info}Cleaning up ..."
         popd >/dev/null
         rm -rf ${WorkDir}/.DownTmp
-    elif [ "${Var_OSRelease}" = "ubuntu" ] || [ "${Var_OSRelease}" = "debian" ]; then
+        elif [ "${Var_OSRelease}" = "ubuntu" ] || [ "${Var_OSRelease}" = "debian" ]; then
         echo -e "${Msg_Warning}Speedtest Module not found, Installing ..."
         echo -e "${Msg_Info}Installing Dependency ..."
         apt-get update
@@ -2000,7 +1959,7 @@ Check_Speedtest_GetComponent() {
         echo -e "${Msg_Info}Cleaning up ..."
         popd >/dev/null
         rm -rf ${WorkDir}/.DownTmp
-    elif [ "${Var_OSRelease}" = "fedora" ]; then
+        elif [ "${Var_OSRelease}" = "fedora" ]; then
         echo -e "${Msg_Warning}Speedtest Module not found, Installing ..."
         echo -e "${Msg_Info}Installing Dependency ..."
         dnf -y install curl
@@ -2015,7 +1974,7 @@ Check_Speedtest_GetComponent() {
         echo -e "${Msg_Info}Cleaning up ..."
         popd >/dev/null
         rm -rf ${WorkDir}/.DownTmp
-    elif [ "${Var_OSRelease}" = "alpinelinux" ]; then
+        elif [ "${Var_OSRelease}" = "alpinelinux" ]; then
         echo -e "${Msg_Warning}Speedtest Module not found, Installing ..."
         echo -e "${Msg_Info}Installing Dependency ..."
         apk update
@@ -2051,6 +2010,24 @@ Check_Speedtest_GetComponent() {
     fi
 }
 
+# =============== 检查 WorstTrace 组件 ===============
+Check_WorstTrace() {
+    if [ ! -f "/usr/local/lemonbench/bin/worsttrace"]; then
+        local DownloadSrc="https://github.com/HostEvaluate/LemonBench/raw/master/Resources/WorstTrace/worsttrace"
+    fi
+    
+    mkdir -p /usr/local/lemonbench/bin/ >/dev/null 2>&1
+    echo -e "${Msg_Warning}WorstTrace is missing. Try to install.."
+    curl --user-agent "${UA_LemonBench}" ${DownloadSrc} -o /usr/local/lemonbench/bin/worsttrace
+    chmod +x /usr/local/lemonbench/bin/worsttrace
+    
+    if [ ! -f "/usr/local/lemonbench/bin/worsttrace"]; then
+        echo -e "Failed to install worsttrace. Exit now."
+        exit 1
+    fi
+    
+}
+
 # =============== 检查 BestTrace 组件 ===============
 Check_BestTrace() {
     if [ ! -f "/usr/local/lemonbench/bin/besttrace" ]; then
@@ -2060,11 +2037,11 @@ Check_BestTrace() {
             local BinaryName="besttrace64"
             local DownloadSrc="https://raindrop.ilemonrain.com/LemonBench/include/BestTrace/besttrace64.tar.gz"
             # local DownloadSrc="https://raw.githubusercontent.com/LemonBench/LemonBench/master/Resources/BestTrace/besttrace64.tar.gz"
-        elif [ "${LBench_Result_SystemBit_Full}" = "i386" ]; then
+            elif [ "${LBench_Result_SystemBit_Full}" = "i386" ]; then
             local BinaryName="besttrace32"
             local DownloadSrc="https://raindrop.ilemonrain.com/LemonBench/include/BestTrace/besttrace32.tar.gz"
             # local DownloadSrc="https://raw.githubusercontent.com/LemonBench/LemonBench/master/Resources/BestTrace/besttrace32.tar.gz"
-        elif [ "${LBench_Result_SystemBit_Full}" = "arm" ]; then
+            elif [ "${LBench_Result_SystemBit_Full}" = "arm" ]; then
             local BinaryName="besttracearm"
             local DownloadSrc="https://raindrop.ilemonrain.com/LemonBench/include/BestTrace/besttracearm.tar.gz"
             # local DownloadSrc="https://raw.githubusercontent.com/LemonBench/LemonBench/master/Resources/BestTrace/besttracearm.tar.gz"
@@ -2089,7 +2066,7 @@ Check_BestTrace() {
             popd >/dev/null
             echo -e "${Msg_Info}Cleaning up ..."
             rm -rf ${WorkDir}/besttrace.tar.gz
-        elif [ "${Var_OSRelease}" = "ubuntu" ] || [ "${Var_OSRelease}" = "debian" ]; then
+            elif [ "${Var_OSRelease}" = "ubuntu" ] || [ "${Var_OSRelease}" = "debian" ]; then
             echo -e "${Msg_Warning}BestTrace Module not found, Installing ..."
             echo -e "${Msg_Info}Installing Dependency ..."
             apt-get update
@@ -2104,7 +2081,7 @@ Check_BestTrace() {
             popd >/dev/null
             echo -e "${Msg_Info}Cleaning up ..."
             rm -rf ${WorkDir}/besttrace.tar.gz
-        elif [ "${Var_OSRelease}" = "fedora" ]; then
+            elif [ "${Var_OSRelease}" = "fedora" ]; then
             echo -e "${Msg_Warning}BestTrace Module not found, Installing ..."
             echo -e "${Msg_Info}Installing Dependency ..."
             dnf -y install wget unzip curl
@@ -2118,7 +2095,7 @@ Check_BestTrace() {
             popd >/dev/null
             echo -e "${Msg_Info}Cleaning up ..."
             rm -rf ${WorkDir}/besttrace.tar.gz
-        elif [ "${Var_OSRelease}" = "alpinelinux" ]; then
+            elif [ "${Var_OSRelease}" = "alpinelinux" ]; then
             echo -e "${Msg_Warning}BestTrace Module not found, Installing ..."
             echo -e "${Msg_Info}Installing Dependency ..."
             apk update
@@ -2153,7 +2130,7 @@ Check_JSONQuery() {
             local DownloadSrc="https://raindrop.ilemonrain.com/LemonBench/include/JSONQuery/jq-amd64.tar.gz"
             # local DownloadSrc="https://raw.githubusercontent.com/LemonBench/LemonBench/master/Resources/JSONQuery/jq-amd64.tar.gz"
             # local DownloadSrc="https://raindrop.ilemonrain.com/LemonBench/include/jq/1.6/amd64/jq.tar.gz"
-        elif [ "${LBench_Result_SystemBit_Short}" = "32" ]; then
+            elif [ "${LBench_Result_SystemBit_Short}" = "32" ]; then
             local DownloadSrc="https://raindrop.ilemonrain.com/LemonBench/include/JSONQuery/jq-i386.tar.gz"
             # local DownloadSrc="https://raw.githubusercontent.com/LemonBench/LemonBench/master/Resources/JSONQuery/jq-i386.tar.gz"
             # local DownloadSrc="https://raindrop.ilemonrain.com/LemonBench/include/jq/1.6/i386/jq.tar.gz"
@@ -2168,16 +2145,16 @@ Check_JSONQuery() {
             echo -e "${Msg_Info}Installing Dependency ..."
             yum install -y epel-release
             yum install -y jq
-        elif [ "${Var_OSRelease}" = "ubuntu" ] || [ "${Var_OSRelease}" = "debian" ]; then
+            elif [ "${Var_OSRelease}" = "ubuntu" ] || [ "${Var_OSRelease}" = "debian" ]; then
             echo -e "${Msg_Warning}JSON Query Module not found, Installing ..."
             echo -e "${Msg_Info}Installing Dependency ..."
             apt-get update
             apt-get install -y jq
-        elif [ "${Var_OSRelease}" = "fedora" ]; then
+            elif [ "${Var_OSRelease}" = "fedora" ]; then
             echo -e "${Msg_Warning}JSON Query Module not found, Installing ..."
             echo -e "${Msg_Info}Installing Dependency ..."
             dnf install -y jq
-        elif [ "${Var_OSRelease}" = "alpinelinux" ]; then
+            elif [ "${Var_OSRelease}" = "alpinelinux" ]; then
             echo -e "${Msg_Warning}JSON Query Module not found, Installing ..."
             echo -e "${Msg_Info}Installing Dependency ..."
             apk update
@@ -2239,7 +2216,7 @@ Check_Spoofer_PreBuild() {
         # 判断系统位数
         if [ "${LBench_Result_SystemBit}" = "i386" ]; then
             local SysBit="i386"
-        elif [ "${LBench_Result_SystemBit}" = "amd64" ]; then
+            elif [ "${LBench_Result_SystemBit}" = "amd64" ]; then
             local SysBit="amd64"
         else
             local SysBit="unknown"
@@ -2247,18 +2224,18 @@ Check_Spoofer_PreBuild() {
         # 判断版本号
         if [ "${Var_CentOSELRepoVersion}" = "6" ]; then
             local SysVer="6"
-        elif [ "${Var_CentOSELRepoVersion}" = "7" ]; then
+            elif [ "${Var_CentOSELRepoVersion}" = "7" ]; then
             local SysVer="7"
         else
             local SysVer="unknown"
         fi
-    # 判断Debian分支
-    elif [ "${Var_OSRelease}" = "debian" ]; then
+        # 判断Debian分支
+        elif [ "${Var_OSRelease}" = "debian" ]; then
         local SysRel="debian"
         # 判断系统位数
         if [ "${LBench_Result_SystemBit}" = "i386" ]; then
             local SysBit="i386"
-        elif [ "${LBench_Result_SystemBit}" = "amd64" ]; then
+            elif [ "${LBench_Result_SystemBit}" = "amd64" ]; then
             local SysBit="amd64"
         else
             local SysBit="unknown"
@@ -2266,18 +2243,18 @@ Check_Spoofer_PreBuild() {
         # 判断版本号
         if [ "${Var_OSReleaseVersion_Short}" = "8" ]; then
             local SysVer="8"
-        elif [ "${Var_OSReleaseVersion_Short}" = "9" ]; then
+            elif [ "${Var_OSReleaseVersion_Short}" = "9" ]; then
             local SysVer="9"
         else
             local SysVer="unknown"
         fi
-    # 判断Ubuntu分支
-    elif [ "${Var_OSRelease}" = "ubuntu" ]; then
+        # 判断Ubuntu分支
+        elif [ "${Var_OSRelease}" = "ubuntu" ]; then
         local SysRel="ubuntu"
         # 判断系统位数
         if [ "${LBench_Result_SystemBit}" = "i386" ]; then
             local SysBit="i386"
-        elif [ "${LBench_Result_SystemBit}" = "amd64" ]; then
+            elif [ "${LBench_Result_SystemBit}" = "amd64" ]; then
             local SysBit="amd64"
         else
             local SysBit="unknown"
@@ -2285,13 +2262,13 @@ Check_Spoofer_PreBuild() {
         # 判断版本号
         if [ "${Var_OSReleaseVersion_Short}" = "14.04" ]; then
             local SysVer="14.04"
-        elif [ "${Var_OSReleaseVersion_Short}" = "16.04" ]; then
+            elif [ "${Var_OSReleaseVersion_Short}" = "16.04" ]; then
             local SysVer="16.04"
-        elif [ "${Var_OSReleaseVersion_Short}" = "18.04" ]; then
+            elif [ "${Var_OSReleaseVersion_Short}" = "18.04" ]; then
             local SysVer="18.04"
-        elif [ "${Var_OSReleaseVersion_Short}" = "18.10" ]; then
+            elif [ "${Var_OSReleaseVersion_Short}" = "18.10" ]; then
             local SysVer="18.10"
-        elif [ "${Var_OSReleaseVersion_Short}" = "19.04" ]; then
+            elif [ "${Var_OSReleaseVersion_Short}" = "19.04" ]; then
             local SysVer="19.04"
         else
             local SysVer="unknown"
@@ -2320,7 +2297,7 @@ Check_Spoofer_PreBuild() {
             echo -e "${Msg_Info}Cleaning up ..."
             rm -f /tmp/_LBench/src/spoofer-prober.tar.gz
             rm -f /tmp/_LBench/src/spoofer-prober
-        elif [ "${SysRel}" = "ubuntu" ] || [ "${SysRel}" = "debian" ]; then
+            elif [ "${SysRel}" = "ubuntu" ] || [ "${SysRel}" = "debian" ]; then
             echo -e "${Msg_Info}Release Detected: ${SysRel} ${SysVer} ${SysBit}"
             echo -e "${Msg_Info}Installing Dependency"
             apt-get update
@@ -2364,7 +2341,7 @@ Check_Spoofer_InstantBuild() {
         cp prober/spoofer-prober /usr/local/bin/spoofer-prober
         echo -e "${Msg_Info}Cleaning up ..."
         cd /tmp && rm -rf /tmp/_LBench/src/spoofer*
-    elif [ "${Var_OSRelease}" = "ubuntu" ] || [ "${Var_OSRelease}" = "debian" ]; then
+        elif [ "${Var_OSRelease}" = "ubuntu" ] || [ "${Var_OSRelease}" = "debian" ]; then
         echo -e "${Msg_Info}Release Detected: ${Var_OSRelease}"
         echo -e "${Msg_Info}Preparing compile enviorment ..."
         apt-get update
@@ -2383,7 +2360,7 @@ Check_Spoofer_InstantBuild() {
         cp prober/spoofer-prober /usr/local/bin/spoofer-prober
         echo -e "${Msg_Info}Cleaning up ..."
         cd /tmp && rm -rf /tmp/_LBench/src/spoofer*
-    elif [ "${Var_OSRelease}" = "fedora" ]; then
+        elif [ "${Var_OSRelease}" = "fedora" ]; then
         echo -e "${Msg_Info}Release Detected: ${Var_OSRelease}"
         echo -e "${Msg_Info}Preparing compile enviorment ..."
         dnf install -y wget curl make gcc gcc-c++ traceroute openssl-devel protobuf-devel bison flex libpcap-devel
@@ -2401,7 +2378,7 @@ Check_Spoofer_InstantBuild() {
         cp prober/spoofer-prober /usr/local/bin/spoofer-prober
         echo -e "${Msg_Info}Cleaning up ..."
         cd /tmp && rm -rf /tmp/_LBench/src/spoofer*
-    elif [ "${Var_OSRelease}" = "alpinelinux" ]; then
+        elif [ "${Var_OSRelease}" = "alpinelinux" ]; then
         echo -e "${Msg_Info}Release Detected: ${Var_OSRelease}"
         echo -e "${Msg_Info}Preparing compile enviorment ..."
         apk update
@@ -2434,10 +2411,10 @@ Check_SysBench() {
             echo -e "${Msg_Warning}Sysbench Module not found, installing ..."
             yum -y install epel-release
             yum -y install sysbench
-        elif [ "${Var_OSRelease}" = "ubuntu" ]; then
+            elif [ "${Var_OSRelease}" = "ubuntu" ]; then
             echo -e "${Msg_Warning}Sysbench Module not found, installing ..."
             apt-get install -y sysbench
-        elif [ "${Var_OSRelease}" = "debian" ]; then
+            elif [ "${Var_OSRelease}" = "debian" ]; then
             echo -e "${Msg_Warning}Sysbench Module not found, installing ..."
             local mirrorbase="https://raindrop.ilemonrain.com/LemonBench"
             local componentname="Sysbench"
@@ -2457,10 +2434,10 @@ Check_SysBench() {
             if [ ! -f "/usr/bin/sysbench" ] && [ ! -f "/usr/local/bin/sysbench" ]; then
                 echo -e "${Msg_Warning}Sysbench Module Install Failed!"
             fi
-        elif [ "${Var_OSRelease}" = "fedora" ]; then
+            elif [ "${Var_OSRelease}" = "fedora" ]; then
             echo -e "${Msg_Warning}Sysbench Module not found, installing ..."
             dnf -y install sysbench
-        elif [ "${Var_OSRelease}" = "alpinelinux" ]; then
+            elif [ "${Var_OSRelease}" = "alpinelinux" ]; then
             echo -e "${Msg_Warning}Sysbench Module not found, installing ..."
             echo -e "${Msg_Warning}SysBench Current not support Alpine Linux, Skipping..."
             Var_Skip_SysBench="1"
@@ -2496,7 +2473,7 @@ Check_Sysbench_InstantBuild() {
         ./autogen.sh && ./configure --without-mysql && make -j8 && make install
         echo -e "${Msg_Info}Cleaning up ..."
         cd /tmp && rm -rf /tmp/_LBench/src/sysbench*
-    elif [ "${Var_OSRelease}" = "ubuntu" ] || [ "${Var_OSRelease}" = "debian" ]; then
+        elif [ "${Var_OSRelease}" = "ubuntu" ] || [ "${Var_OSRelease}" = "debian" ]; then
         echo -e "${Msg_Info}Release Detected: ${Var_OSRelease}"
         echo -e "${Msg_Info}Preparing compile enviorment ..."
         apt-get update
@@ -2510,7 +2487,7 @@ Check_Sysbench_InstantBuild() {
         ./autogen.sh && ./configure --without-mysql && make -j8 && make install
         echo -e "${Msg_Info}Cleaning up ..."
         cd /tmp && rm -rf /tmp/_LBench/src/sysbench*
-    elif [ "${Var_OSRelease}" = "fedora" ]; then
+        elif [ "${Var_OSRelease}" = "fedora" ]; then
         echo -e "${Msg_Info}Release Detected: ${Var_OSRelease}"
         echo -e "${Msg_Info}Preparing compile enviorment ..."
         dnf install -y wget curl gcc gcc-c++ make automake libtool pkgconfig libaio-devel
@@ -2531,9 +2508,9 @@ Check_Sysbench_InstantBuild() {
 Function_CheckTracemode() {
     if [ "${Flag_TracerouteModeisSet}" = "1" ]; then
         if [ "${GlobalVar_TracerouteMode}" = "icmp" ]; then
-            echo -e "${Msg_Info}Traceroute/BestTrace Tracemode is set to: ${Font_SkyBlue}ICMP Mode${Font_Suffix}"
-        elif [ "${GlobalVar_TracerouteMode}" = "tcp" ]; then
-            echo -e "${Msg_Info}Traceroute/BestTrace Tracemode is set to: ${Font_SkyBlue}TCP Mode${Font_Suffix}"
+            echo -e "${Msg_Info}Traceroute/BestTrace Tracemode set to: ${Font_SkyBlue}ICMP Mode${Font_Suffix}"
+            elif [ "${GlobalVar_TracerouteMode}" = "tcp" ]; then
+            echo -e "${Msg_Info}Traceroute/BestTrace Tracemode set to: ${Font_SkyBlue}TCP Mode${Font_Suffix}"
         fi
     else
         GlobalVar_TracerouteMode="tcp"
@@ -2546,26 +2523,20 @@ Global_Startup_Header() {
  ${Font_Green}#-----------------------------------------------------------#${Font_Suffix}
  ${Font_Green}@${Font_Suffix}    ${Font_Blue}LemonBench${Font_Suffix} ${Font_Yellow}Server Evaluation & Benchmark Ultility${Font_Suffix}      ${Font_Green}@${Font_Suffix}
  ${Font_Green}#-----------------------------------------------------------#${Font_Suffix}
- ${Font_Green}@${Font_Suffix} ${Font_Purple}Written by${Font_Suffix} ${Font_SkyBlue}iLemonrain${Font_Suffix} ${Font_Blue}<ilemonrain@ilemonrain.com>${Font_Suffix}         ${Font_Green}@${Font_Suffix}
- ${Font_Green}@${Font_Suffix} ${Font_Purple}My Blog:${Font_Suffix} ${Font_SkyBlue}https://ilemonrain.com${Font_Suffix}                           ${Font_Green}@${Font_Suffix}
- ${Font_Green}@${Font_Suffix} ${Font_Purple}Telegram:${Font_Suffix} ${Font_SkyBlue}https://t.me/ilemonrain${Font_Suffix}                         ${Font_Green}@${Font_Suffix}
- ${Font_Green}@${Font_Suffix} ${Font_Purple}Telegram (For +86 User):${Font_Suffix} ${Font_SkyBlue}https://t.me/ilemonrain_chatbot${Font_Suffix}  ${Font_Green}@${Font_Suffix}
- ${Font_Green}@${Font_Suffix} ${Font_Purple}Telegram Channel:${Font_Suffix} ${Font_SkyBlue}https://t.me/ilemonrain_channel${Font_Suffix}         ${Font_Green}@${Font_Suffix}
- ${Font_Green}#-----------------------------------------------------------#${Font_Suffix}
 
  Version: ${BuildTime}
 
  Reporting Bugs Via:
- https://t.me/ilemonrain 或 https://t.me/ilemonrain_chatbot
+ https://t.me/pajiuk
  (简体中文/繁體中文/English only)
- 
+
  Thanks for using！
 
  Usage (two way):
- (1) wget -O- https://ilemonrain.com/download/shell/LemonBench.sh | bash
- (2) curl -fsL https://ilemonrain.com/download/shell/LemonBench.sh | bash
+ (1) wget -O- https://raw.githubusercontent.com/HostEvaluate/LemonBench/master/LemonBench.sh | bash
+ (2) curl -fsL https://raw.githubusercontent.com/HostEvaluate/LemonBench/master/LemonBench.sh | bash
 
-"
+    "
 }
 
 # =============== 入口 - 快速测试 (fast) ===============
@@ -2780,8 +2751,6 @@ Entrance_HelpDocument() {
     echo -e " "
     echo -e " ${Font_SkyBlue}LemonBench${Font_Suffix} ${Font_Yellow}Server Performace Test Utility${Font_Suffix}"
     echo -e " "
-    echo -e " ${Font_Yellow}Written by:${Font_Suffix}\t\t ${Font_SkyBlue}iLemonrain <ilemonrain@ilemonrain.com>${Font_Suffix}"
-    echo -e " ${Font_Yellow}Project Homepage:${Font_Suffix}\t ${Font_SkyBlue}https://blog.ilemonrain.com/linux/LemonBench.html${Font_Suffix}"
     echo -e " ${Font_Yellow}Code Version:${Font_Suffix}\t\t ${Font_SkyBlue}${BuildTime}${Font_Suffix}"
     echo -e " "
     echo -e " Usage:"
@@ -2798,7 +2767,7 @@ Entrance_HelpDocument() {
     echo -e " ${Font_Yellow}--sbcfast${Font_Suffix}\t\t${Font_SkyBlue}CPU Benchmark Test (Fast Test Mode)${Font_Suffix}"
     echo -e " ${Font_Yellow}--sbcfull${Font_Suffix}\t\t${Font_SkyBlue}CPU Benchmark Test (Full Test Mode)${Font_Suffix}"
     echo -e " ${Font_Yellow}--sbmfast${Font_Suffix}\t\t${Font_SkyBlue}Memory Benchmark Test (Fast Test Mode)${Font_Suffix}"
-    echo -e " ${Font_Yellow}--sbmfull${Font_Suffix}\t\t${Font_SkyBlue}Memory Benchmark Test (Full Test Mode)${Font_Suffix}"    
+    echo -e " ${Font_Yellow}--sbmfull${Font_Suffix}\t\t${Font_SkyBlue}Memory Benchmark Test (Full Test Mode)${Font_Suffix}"
     echo -e " ${Font_Yellow}--spoof${Font_Suffix}\t\t${Font_SkyBlue}Caida Spoofer Test ${Font_Yellow}(Use it at your own risk)${Font_Suffix}${Font_Suffix}"
 }
 
@@ -2807,121 +2776,121 @@ Entrance_HelpDocument() {
 SingleTestCount="0"
 while [[ $# -ge 1 ]]; do
     case $1 in
-    mode | -mode | --mode | testmode | -testmode | --testmode)
-        shift
-        if [ "${GlobalVar_TestMode}" != "" ]; then
-            echo -e "\n${Msg_Error}只允许同时启用一种预置测试! 请检查输入参数后重试!"
+        mode | -mode | --mode | testmode | -testmode | --testmode)
+            shift
+            if [ "${GlobalVar_TestMode}" != "" ]; then
+                echo -e "\n${Msg_Error}只允许同时启用一种预置测试! 请检查输入参数后重试!"
+                Entrance_HelpDocument
+                exit 1
+            else
+                GlobalVar_TestMode="$1"
+                shift
+            fi
+        ;;
+        # 快速测试
+        fast | -fast | --fast)
+            shift
+            if [ "${GlobalVar_TestMode}" != "" ]; then
+                echo -e "\n${Msg_Error}只允许同时启用一种预置测试! 请检查输入参数后重试!"
+                Entrance_HelpDocument
+                exit 1
+            else
+                GlobalVar_TestMode="fast"
+            fi
+        ;;
+        # 完整测试
+        full | -full | --full)
+            shift
+            if [ "${GlobalVar_TestMode}" != "" ]; then
+                echo -e "\n${Msg_Error}只允许同时启用一种预置测试! 请检查输入参数后重试!"
+                Entrance_HelpDocument
+                exit 1
+            else
+                GlobalVar_TestMode="full"
+            fi
+        ;;
+        # 流媒体解锁测试
+        mlt | -mlt | --mlt)
+            shift
+            GlobalVar_TestMode="mediaunlocktest"
+        ;;
+        # 磁盘测试
+        dtfast | -dtfast | --dtfast)
+            shift
+            GlobalVar_TestMode="disktest-fast"
+        ;;
+        dtfull | -dtfull | --dtfull)
+            shift
+            GlobalVar_TestMode="disktest-full"
+        ;;
+        # Speedtest测试
+        spfast | -spfast | --spfast)
+            shift
+            GlobalVar_TestMode="speedtest-fast"
+        ;;
+        spfull | -spfull | --spfull)
+            shift
+            GlobalVar_TestMode="speedtest-full"
+        ;;
+        # 路由追踪测试
+        btfast | -btfast | --btfast | trfast | -trfast | --trfast)
+            shift
+            GlobalVar_TestMode="besttrace-fast"
+        ;;
+        btfull | -btfull | --btfull | trfull | -trull | --trfull)
+            shift
+            GlobalVar_TestMode="besttrace-full"
+        ;;
+        # Spoof测试
+        spf | -spf | --spf | spoof | -spoof | --spoof | spoofer | -spoofer | --spoofer)
+            shift
+            GlobalVar_TestMode="spoof"
+        ;;
+        # CPU测试
+        sbcfast | -sbcfast | --sbcfast)
+            shift
+            GlobalVar_TestMode="sysbench-cpu-fast"
+        ;;
+        sbcfull | -sbcfull | --sbcfull)
+            shift
+            GlobalVar_TestMode="sysbench-cpu-full"
+        ;;
+        # 内存测试
+        sbmfast | -sbmfast | --sbmfast)
+            shift
+            GlobalVar_TestMode="sysbench-memory-fast"
+        ;;
+        sbmfull | -sbmfull | --sbmfull)
+            shift
+            GlobalVar_TestMode="sysbench-memory-full"
+        ;;
+        # 路由追踪测试模式
+        tracemode | -tracemode | --tracemode )
+            shift
+            if [ "$1" = "icmp" ]; then
+                Flag_TracerouteModeisSet="1"
+                GlobalVar_TracerouteMode="icmp"
+                shift
+                elif [ "$1" = "tcp" ]; then
+                Flag_TracerouteModeisSet="1"
+                GlobalVar_TracerouteMode="tcp"
+                shift
+            else
+                Flag_TracerouteModeisSet="0"
+                GlobalVar_TracerouteMode="tcp"
+                shift
+            fi
+        ;;
+        # 帮助文档
+        h | -h | --h | help | -help | --help)
             Entrance_HelpDocument
             exit 1
-        else
-            GlobalVar_TestMode="$1"
-            shift
-        fi
         ;;
-    # 快速测试
-    fast | -fast | --fast)
-        shift
-        if [ "${GlobalVar_TestMode}" != "" ]; then
-            echo -e "\n${Msg_Error}只允许同时启用一种预置测试! 请检查输入参数后重试!"
+        # 无效参数处理
+        *)
+            [[ "$1" != 'error' ]] && echo -ne "\n${Msg_Error}Invalid Parameters: \"$1\"\n"
             Entrance_HelpDocument
             exit 1
-        else
-            GlobalVar_TestMode="fast"
-        fi
-        ;;
-    # 完整测试
-    full | -full | --full)
-        shift
-        if [ "${GlobalVar_TestMode}" != "" ]; then
-            echo -e "\n${Msg_Error}只允许同时启用一种预置测试! 请检查输入参数后重试!"
-            Entrance_HelpDocument
-            exit 1
-        else
-            GlobalVar_TestMode="full"
-        fi
-        ;;
-    # 流媒体解锁测试
-    mlt | -mlt | --mlt)
-        shift
-        GlobalVar_TestMode="mediaunlocktest"
-        ;;
-    # 磁盘测试
-    dtfast | -dtfast | --dtfast)
-        shift
-        GlobalVar_TestMode="disktest-fast"
-        ;;
-    dtfull | -dtfull | --dtfull)
-        shift
-        GlobalVar_TestMode="disktest-full"
-        ;;
-    # Speedtest测试
-    spfast | -spfast | --spfast)
-        shift
-        GlobalVar_TestMode="speedtest-fast"
-        ;;
-    spfull | -spfull | --spfull)
-        shift
-        GlobalVar_TestMode="speedtest-full"
-        ;;
-    # 路由追踪测试        
-    btfast | -btfast | --btfast | trfast | -trfast | --trfast)
-        shift
-        GlobalVar_TestMode="besttrace-fast"
-        ;;
-    btfull | -btfull | --btfull | trfull | -trull | --trfull)
-        shift
-        GlobalVar_TestMode="besttrace-full"
-        ;;
-    # Spoof测试
-    spf | -spf | --spf | spoof | -spoof | --spoof | spoofer | -spoofer | --spoofer)
-        shift
-        GlobalVar_TestMode="spoof"
-        ;;
-    # CPU测试
-    sbcfast | -sbcfast | --sbcfast)
-        shift
-        GlobalVar_TestMode="sysbench-cpu-fast"
-        ;;
-    sbcfull | -sbcfull | --sbcfull)
-        shift
-        GlobalVar_TestMode="sysbench-cpu-full"
-        ;;
-    # 内存测试
-    sbmfast | -sbmfast | --sbmfast)
-        shift
-        GlobalVar_TestMode="sysbench-memory-fast"
-        ;;
-    sbmfull | -sbmfull | --sbmfull)
-        shift
-        GlobalVar_TestMode="sysbench-memory-full"
-        ;;
-    # 路由追踪测试模式
-    tracemode | -tracemode | --tracemode )
-        shift
-        if [ "$1" = "icmp" ]; then
-            Flag_TracerouteModeisSet="1"
-            GlobalVar_TracerouteMode="icmp"
-            shift
-        elif [ "$1" = "tcp" ]; then
-            Flag_TracerouteModeisSet="1"
-            GlobalVar_TracerouteMode="tcp"
-            shift
-        else
-            Flag_TracerouteModeisSet="0"
-            GlobalVar_TracerouteMode="tcp"
-            shift
-        fi
-        ;;
-    # 帮助文档
-    h | -h | --h | help | -help | --help)
-        Entrance_HelpDocument
-        exit 1
-        ;;
-    # 无效参数处理
-    *)
-        [[ "$1" != 'error' ]] && echo -ne "\n${Msg_Error}Invalid Parameters: \"$1\"\n"
-        Entrance_HelpDocument
-        exit 1
         ;;
     esac
 done
@@ -2930,46 +2899,46 @@ echo " "
 if [ "${#SingleTestList[@]}" -eq "0" ] && [ "${GlobalVar_TestMode}" = "" ]; then
     Entrance_HelpDocument
     exit 1
-elif [ "${GlobalVar_TestMode}" = "fast" ]; then
+    elif [ "${GlobalVar_TestMode}" = "fast" ]; then
     Global_Startup_Header
     Entrance_FastBench
-elif [ "${GlobalVar_TestMode}" = "full" ]; then
+    elif [ "${GlobalVar_TestMode}" = "full" ]; then
     Global_Startup_Header
     Entrance_FullBench
-elif [ "${GlobalVar_TestMode}" = "mediaunlocktest" ]; then
+    elif [ "${GlobalVar_TestMode}" = "mediaunlocktest" ]; then
     Global_Startup_Header
     Entrance_MediaUnlockTest
-elif [ "${GlobalVar_TestMode}" = "disktest-fast" ]; then
+    elif [ "${GlobalVar_TestMode}" = "disktest-fast" ]; then
     Global_Startup_Header
     Entrance_DiskTest_Fast
-elif [ "${GlobalVar_TestMode}" = "disktest-full" ]; then
+    elif [ "${GlobalVar_TestMode}" = "disktest-full" ]; then
     Global_Startup_Header
     Entrance_DiskTest_Full
-elif [ "${GlobalVar_TestMode}" = "speedtest-fast" ]; then
+    elif [ "${GlobalVar_TestMode}" = "speedtest-fast" ]; then
     Global_Startup_Header
     Entrance_Speedtest_Fast
-elif [ "${GlobalVar_TestMode}" = "speedtest-full" ]; then
+    elif [ "${GlobalVar_TestMode}" = "speedtest-full" ]; then
     Global_Startup_Header
     Entrance_Speedtest_Full
-elif [ "${GlobalVar_TestMode}" = "besttrace-fast" ]; then
+    elif [ "${GlobalVar_TestMode}" = "besttrace-fast" ]; then
     Global_Startup_Header
     Entrance_BestTrace_Fast
-elif [ "${GlobalVar_TestMode}" = "besttrace-full" ]; then
+    elif [ "${GlobalVar_TestMode}" = "besttrace-full" ]; then
     Global_Startup_Header
     Entrance_BestTrace_Full
-elif [ "${GlobalVar_TestMode}" = "spoof" ]; then
+    elif [ "${GlobalVar_TestMode}" = "spoof" ]; then
     Global_Startup_Header
     Entrance_Spoofer
-elif [ "${GlobalVar_TestMode}" = "sysbench-cpu-fast" ]; then
+    elif [ "${GlobalVar_TestMode}" = "sysbench-cpu-fast" ]; then
     Global_Startup_Header
     Entrance_SysBench_CPU_Fast
-elif [ "${GlobalVar_TestMode}" = "sysbench-cpu-full" ]; then
+    elif [ "${GlobalVar_TestMode}" = "sysbench-cpu-full" ]; then
     Global_Startup_Header
     Entrance_SysBench_CPU_Full
-elif [ "${GlobalVar_TestMode}" = "sysbench-memory-fast" ]; then
+    elif [ "${GlobalVar_TestMode}" = "sysbench-memory-fast" ]; then
     Global_Startup_Header
     Entrance_SysBench_Memory_Fast
-elif [ "${GlobalVar_TestMode}" = "sysbench-memory-full" ]; then
+    elif [ "${GlobalVar_TestMode}" = "sysbench-memory-full" ]; then
     Global_Startup_Header
     Entrance_SysBench_Memory_Full
 else
