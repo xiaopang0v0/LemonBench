@@ -1059,8 +1059,8 @@ BenchAPI_MediaUnlockTest_UmamusumeJP() {
             elif [ "${R_R1}" = "403" ]; then
             local F_F1="0"
         else
-            LemonBench_Result_MediaUnlockTest_UmamusumeJP="Failed: Unkown error"
-            echo -n -e "\r Pretty Derby(JP):\t\t\t${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+            LemonBench_Result_MediaUnlockTest_UmamusumeJP="Failed: Unknown error"
+            echo -n -e "\r Pretty Derby(JP):\t\t\t${Font_Red}Failed: Unknown error${Font_Suffix}\n"
         fi
     else
         LemonBench_Result_MediaUnlockTest_UmamusumeJP="Connection Failed"
@@ -1073,8 +1073,8 @@ BenchAPI_MediaUnlockTest_UmamusumeJP() {
             elif [ "${R_R2}" = "403" ]; then
             local F_F2="0"
         else
-            LemonBench_Result_MediaUnlockTest_UmamusumeJP="Failed: Unkown error"
-            echo -n -e "\r Pretty Derby(JP):\t\t\t${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+            LemonBench_Result_MediaUnlockTest_UmamusumeJP="Failed: Unknown error"
+            echo -n -e "\r Pretty Derby(JP):\t\t\t${Font_Red}Failed: Unknown error${Font_Suffix}\n"
         fi
     else
         LemonBench_Result_MediaUnlockTest_UmamusumeJP="Connection Failed"
@@ -1106,8 +1106,8 @@ BenchAPI_MediaUnlockTest_KanColleJP() {
             LemonBench_Result_MediaUnlockTest_KanColleJP="Connection failed"
             echo -n -e "\r Kantai Collection(JP):\t\t\t${Font_Red}Connection failed${Font_Suffix}\n"
         else
-            LemonBench_Result_MediaUnlockTest_KanColleJP="Failed: Unkown error"
-            echo -n -e "\r Kantai Collection(JP):\t\t\t${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+            LemonBench_Result_MediaUnlockTest_KanColleJP="Failed: Unknown error"
+            echo -n -e "\r Kantai Collection(JP):\t\t\t${Font_Red}Failed: Unknown error${Font_Suffix}\n"
         fi
     else
         LemonBench_Result_MediaUnlockTest_KanColleJP="Connection failed"
@@ -1135,8 +1135,8 @@ BenchAPI_MediaUnlockTest_Netflix() {
         LemonBench_Result_MediaUnlockTest_Netflix="Connection failed"
         echo -n -e "\r Netflix:\t\t\t\t${Font_Red}Connection failed${Font_Suffix}\n"
     else
-        LemonBench_Result_MediaUnlockTest_Netflix="Failed: Unkown error"
-        echo -n -e "\r Netflix:\t\t\t\t${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+        LemonBench_Result_MediaUnlockTest_Netflix="Failed: Unknown error"
+        echo -n -e "\r Netflix:\t\t\t\t${Font_Red}Failed: Unknown error${Font_Suffix}\n"
     fi
 }
 #
@@ -1157,8 +1157,8 @@ BenchAPI_MediaUnlockTest_YoutubePremium() {
             LemonBench_Result_MediaUnlockTest_YoutubePremium="No"
             echo -n -e "\r Youtube Premium:\t\t\t${Font_Red}No${Font_Suffix}\n"
         fi
-        LemonBench_Result_MediaUnlockTest_YoutubePremium="Failed: Unkown error"
-        echo -n -e "\r Youtube Premium:\t\t\t${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+        LemonBench_Result_MediaUnlockTest_YoutubePremium="Failed: Unknown error"
+        echo -n -e "\r Youtube Premium:\t\t\t${Font_Red}Failed: Unknown error${Font_Suffix}\n"
     fi
 }
 #
@@ -1174,8 +1174,8 @@ BenchAPI_MediaUnlockTest_TiktokRegion() {
             LemonBench_Result_MediaUnlockTest_Tiktok="Yes (GeoIP: ${R_R2})"
             echo -n -e "\r Tiktok:\t\t\t\t${Font_Green}Yes (GeoIP: ${R_R2})${Font_Suffix}\n"
         else
-            LemonBench_Result_MediaUnlockTest_Tiktok="Failed(Unkown error)"
-            echo -n -e "\r Tiktok:\t\t\t\t${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+            LemonBench_Result_MediaUnlockTest_Tiktok="Failed(Unknown error)"
+            echo -n -e "\r Tiktok:\t\t\t\t${Font_Red}Failed: Unknown error${Font_Suffix}\n"
         fi
     fi
 }
@@ -1189,8 +1189,8 @@ BenchAPI_MediaUnlockTest_SteamPriceCurrency() {
             LemonBench_Result_MediaUnlockTest_Steam="${R_R2}"
             echo -n -e "\r Steam currency:\t\t\t ${R_R2}\n"
         else
-            LemonBench_Result_MediaUnlockTest_Steam="Failed(Unkown error)"
-            echo -n -e "\r Steam currency:\t\t\t ${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+            LemonBench_Result_MediaUnlockTest_Steam="Failed(Unknown error)"
+            echo -n -e "\r Steam currency:\t\t\t ${Font_Red}Failed: Unknown error${Font_Suffix}\n"
         fi
     else
         LemonBench_Result_MediaUnlockTest_Steam="Connection error"
