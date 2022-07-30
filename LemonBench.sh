@@ -1150,12 +1150,14 @@ BenchAPI_MediaUnlockTest_YoutubePremium() {
         local R_R2 && R_R2="$(echo "${R_R1}" | grep -oP '(?<="countryCode":").*?(?=")')"
         if [ -n "${R_R2}" ]; then
             LemonBench_Result_MediaUnlockTest_YoutubePremium="Yes (GeoIP: ${R_R2})"
-            echo -n -e "\r Youtube Premium:\t\t\t${Font_Red}Yes (GeoIP: ${R_R2})${Font_Suffix}\n"
+            echo -n -e "\r Youtube Premium:\t\t\t${Font_Green}Yes (GeoIP: ${R_R2})${Font_Suffix}\n"
+            return 1
         fi
         local R_R3 && R_R3="$(echo "${R_R1}" | grep -o "Premium is not available in your country")"
         if [ -n "${R_R3}" ]; then
             LemonBench_Result_MediaUnlockTest_YoutubePremium="No"
             echo -n -e "\r Youtube Premium:\t\t\t${Font_Red}No${Font_Suffix}\n"
+            return 1
         fi
         LemonBench_Result_MediaUnlockTest_YoutubePremium="Failed: Unknown error"
         echo -n -e "\r Youtube Premium:\t\t\t${Font_Red}Failed: Unknown error${Font_Suffix}\n"
