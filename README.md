@@ -1,6 +1,6 @@
 # LemonBench - Linux Server Benchmark Toolkit
 
-Current Version: 20220701 Intl Bespoke
+Current Version: 20220730 Intl Bespoke
 
 SpeedTest server list and traceroute ip list is different from original LemonBench.
 

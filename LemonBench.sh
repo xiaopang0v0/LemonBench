@@ -21,11 +21,13 @@
 # === 全局定义 =====================================
 
 # 全局参数定义
-BuildTime="20220701 Intl Bespoke"
+BuildTime="20220730 Intl Bespoke"
 WorkDir="/tmp/.LemonBench"
 UA_LemonBench="LemonBench/${BuildTime}"
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
 UA_Dalvik="Dalvik/2.1.0 (Linux; U; Android 9; ALP-AL00 Build/HUAWEIALP-AL00)"
+UA_UnityPlayer="UnityPlayer/2019.4.1f1 (UnityWebRequest/1.0, libcurl/7.52.0-DEV)"
+CurlMaxTime="30"
 
 # 字体颜色定义
 Font_Black="\033[30m"
@@ -105,22 +107,23 @@ PharseJSON() {
     echo -n $1 | jq -r .$2
 }
 
-# Ubuntu PasteBin 提交工具
-# 感谢 @metowolf 提供思路
+# wmlabs PasteBin 提交工具
 PasteBin_Upload() {
     local uploadresult="$(curl -fsL -X POST \
-        --url https://paste.ubuntu.com \
-        --output /dev/null \
-        --write-out "%{url_effective}\n" \
+        --url https://paste.wmlabs.net/ \
         --data-urlencode "content@${PASTEBIN_CONTENT:-/dev/stdin}" \
-        --data "poster=${PASTEBIN_POSTER:-LemonBench}" \
-        --data "expiration=${PASTEBIN_EXPIRATION:-}" \
-    --data "syntax=${PASTEBIN_SYNTAX:-text}")"
+        --data "title=${PASTEBIN_TITLE:-LemonBench result report}" \
+        --data "author=${PASTEBIN_AUTHOR:-LemonBench}" \
+        --data "plain=true" \
+        --data "ttl=${PASTEBIN_TTL:--1}")"
     if [ "$?" = "0" ]; then
-        echo -e "${Msg_Success}Report Generate Success！Please save the follwing link:"
-        echo -e "${Msg_Info}Report URL: ${uploadresult}"
+        #echo -e "${uploadresult}"
+        #local R_RD ="$(echo "${uploadresult}" | jq -r .data.id)"
+        echo -e "${Msg_Success}The bench finished and we made an online report for you."
+        echo -e "${Msg_Info}Retrieve your report at: https://paste.wmlabs.net/p/${uploadresult}"
     else
-        echo -e "${Msg_Warning}Report Generate Failure, But you can still read $HOME/LemonBench.Result.txt to get this result！"
+        echo -e "${Msg_Warning}The bench finished but we failed producing an online report."
+        echo -e "${Msg_Info}Results saved to $HOME/LemonBench-Result.txt"
     fi
 }
 
@@ -773,12 +776,19 @@ Function_MediaUnlockTest() {
     Function_MediaUnlockTest_HBONow
     Function_MediaUnlockTest_BahamutAnime
     Function_MediaUnlockTest_AbemaTV_IPTest
-    Function_MediaUnlockTest_PCRJP
     #Function_MediaUnlockTest_IQiYi_Taiwan
     Function_MediaUnlockTest_BBC
     Function_MediaUnlockTest_BilibiliChinaMainland
     Function_MediaUnlockTest_BilibiliHKMCTW
     Function_MediaUnlockTest_BilibiliTW
+    BenchAPI_MediaUnlockTest_NicoVideo
+    BenchAPI_MediaUnlockTest_Netflix
+    BenchAPI_MediaUnlockTest_YoutubePremium
+    BenchAPI_MediaUnlockTest_TiktokRegion
+    Function_MediaUnlockTest_PCRJP
+    BenchAPI_MediaUnlockTest_UmamusumeJP
+    BenchAPI_MediaUnlockTest_KanColleJP
+    BenchAPI_MediaUnlockTest_SteamPriceCurrency
     LBench_Flag_FinishMediaUnlockTest="1"
 }
 
@@ -958,50 +968,24 @@ Function_MediaUnlockTest_BilibiliTW() {
 # 流媒体解锁测试-Abema.TV
 #
 Function_MediaUnlockTest_AbemaTV_IPTest() {
-    echo -n -e " Abema.TV:\t\t\t\t\c"
-    #
-    # 第一轮判断: 判断IP是否为日本IP (通过Akamai)
-    # 如果不是日本IP, 后续没必要继续判断了
-    local result="$(curl --user-agent "${UA_Browser}" -4 -fsL --write-out %{http_code} --max-time 30 --output /dev/null http://abematv.akamaized.net/region)"
-    if [ "$?" = "0" ]; then
-        if [ "${result}" = "200" ]; then
-            # 当Akamai 返回 HTTP 200 (OK) 时, 继续第二轮判断
-            local result="$(curl --user-agent "${UA_Browser}" -4 -fsL https://abema.tv/now-on-air/abema-news)"
-            local result="$(curl --user-agent "${UA_Browser}" -4 -fsL https://abema.tv/now-on-air/abema-news)"
-            local result1="$(echo $result | awk -F ' = ' '/window.__CLIENT_REGION__/{print $2$3}' | grep -oP '(?<='isAllowed'":)[0-9A-Za-z]+')"
-            local result2="$(echo $result | awk -F ' = ' '/window.__CLIENT_REGION__/{print $2$3}' | grep -oP '(?<='status'":)[0-9A-Za-z]+')"
-            if [ "${result1}" = "true" ] && [ "${result2}" = "true" ]; then
+    local R_R1 && R_R1="$(curl -fsL --user-agent "${UA_Dalvik}" --max-time ${CurlMaxTime} https://api.abema.io/v1/ip/check?device=android 2>&1)"
+    if [[ "${R_R1}" != "curl"* ]]; then
+        local R_R2 && R_R2="$(PharseJSON "${R_R1}" "isoCountryCode")"
+        if [ -n "${R_R2}" ]; then
+            if [ "${R_R2}" = "JP" ]; then
                 echo -n -e "\r Abema.TV:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
                 LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Yes"
-                elif [ "${result1}" = "true" ] && [ "${result2}" = "false" ]; then
-                echo -n -e "\r Abema.TV:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
-                LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Yes"
-                elif [ "${result1}" = "false" ] && [ "${result2}" = "true" ]; then
-                echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-                LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="No"
-                elif [ "${result1}" = "false" ] && [ "${result2}" = "false" ]; then
-                echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-                LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="No"
             else
-                echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}Failed (Unexpected Return Value)${Font_Suffix}\n"
-                LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Failed (Unexpected Return Value)"
+                echo -n -e "\r Abema.TV:\t\t\t\t${Font_Green}Overseas only${Font_Suffix}\n"
+                LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Overseas only"
             fi
-            elif [ "${result}" = "403" ]; then
-            echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-            LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="No"
-            elif [ "${result}" = "404" ]; then
-            echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}Failed (HTTP 404 Caught)${Font_Suffix}\n"
-            LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Failed (HTTP 404 Caught)"
-            elif [ "${result}" = "000" ]; then
-            echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
-            LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="No"
         else
-            echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}Failed (Unexpected HTTP Code)${Font_Suffix} ${Font_SkyBlue}(${result})${Font_Suffix}\n"
-            LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Failed (Unexpected HTTP Code)"
+            echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+            LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="No"
         fi
     else
-        echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
-        LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Failed (Network Connection)"
+        echo -n -e "\r Abema.TV:\t\t\t\t${Font_Red}Connection Failed${Font_Suffix}\n"
+        LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest="Connection Failed"
     fi
 }
 
@@ -1043,6 +1027,174 @@ Function_MediaUnlockTest_BBC() {
     else
         echo -n -e "\r BBC:\t\t\t\t\t${Font_Red}Failed (Network Connection)${Font_Suffix}\n"
         LemonBench_Result_MediaUnlockTest_BBC="Failed (Network Connection)"
+    fi
+}
+
+# v2 抄过来的部分
+#
+# -> 流媒体解锁测试 - NicoNico
+BenchAPI_MediaUnlockTest_NicoVideo() {
+    local R_R1 && R_R1="$(curl -fsL --user-agent "${UA_Browser}" --max-time ${CurlMaxTime} https://www.nicovideo.jp/watch/so23017073 2>&1)"
+    if [[ "${R_R1}" != "curl"* ]]; then
+        local R_R2 && R_R2="$(echo "${R_R1}" | grep -oP "(?<=<p class=\"fail-message\">).*(?=</p>)")"
+        if [ "${R_R2}" = "この動画は投稿( アップロード )された地域と同じ地域からのみ視聴できます。" ]; then
+            echo -n -e "\r NicoNico:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+            LemonBench_Result_MediaUnlockTest_Nico="No"
+        else
+            echo -n -e "\r NicoNico:\t\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+            LemonBench_Result_MediaUnlockTest_Nico="Yes"
+        fi
+    else
+        echo -n -e "\r NicoNico:\t\t\t\t${Font_Red}Connection Failed${Font_Suffix}\n"
+        LemonBench_Result_MediaUnlockTest_Nico="Connection Failed"
+    fi
+}
+#
+# -> 流媒体解锁测试 - Pretty Derby - Japan Server
+BenchAPI_MediaUnlockTest_UmamusumeJP() {
+    local R_R1 && R_R1="$(curl -fsL --user-agent "${UA_UnityPlayer}" --max-time ${CurlMaxTime} --write-out "%{http_code}" --output /dev/null https://api-umamusume.cygames.jp/)"
+    if [[ "${R_R1}" != "curl"* ]]; then
+        if [ "${R_R1}" = "404" ]; then
+            local F_F1="1"
+            elif [ "${R_R1}" = "403" ]; then
+            local F_F1="0"
+        else
+            LemonBench_Result_MediaUnlockTest_UmamusumeJP="Failed: Unkown error"
+            echo -n -e "\r Pretty Derby(JP):\t\t\t${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+        fi
+    else
+        LemonBench_Result_MediaUnlockTest_UmamusumeJP="Connection Failed"
+        echo -n -e "\r Pretty Derby(JP):\t\t\t${Font_Red}Connection Failed${Font_Suffix}\n"
+    fi
+    local R_R2 && R_R2="$(curl -fsL --user-agent "${UA_UnityPlayer}" --max-time ${CurlMaxTime} --write-out "%{http_code}" --output /dev/null https://api-umamusume.cygames.jp/umamusume/tool/pre_signup)"
+    if [[ "${R_R2}" != "curl"* ]]; then
+        if [ "${R_R2}" = "500" ]; then
+            local F_F2="1"
+            elif [ "${R_R2}" = "403" ]; then
+            local F_F2="0"
+        else
+            LemonBench_Result_MediaUnlockTest_UmamusumeJP="Failed: Unkown error"
+            echo -n -e "\r Pretty Derby(JP):\t\t\t${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+        fi
+    else
+        LemonBench_Result_MediaUnlockTest_UmamusumeJP="Connection Failed"
+        echo -n -e "\r Pretty Derby(JP):\t\t\t${Font_Red}Connection Failed${Font_Suffix}\n"
+    fi
+    if [ "${F_F1}" = "1" ] && [ "${F_F2}" = "1" ]; then
+        LemonBench_Result_MediaUnlockTest_UmamusumeJP="Yes"
+        echo -n -e "\r Pretty Derby(JP):\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+        elif [ "${F_F1}" = "1" ] && [ "${F_F2}" = "0" ]; then
+        LemonBench_Result_MediaUnlockTest_UmamusumeJP="Yes with registration restriction"
+        echo -n -e "\r Pretty Derby(JP):\t\t\t${Font_Green}Yes with registration restriction${Font_Suffix}\n"
+    else
+        LemonBench_Result_MediaUnlockTest_UmamusumeJP="No"
+        echo -n -e "\r Pretty Derby(JP):\t\t\t${Font_Red}No${Font_Suffix}\n"
+    fi
+}
+#
+# -> 流媒体解锁测试 - Kantai Collection - Japan Server
+BenchAPI_MediaUnlockTest_KanColleJP() {
+    local R_R && R_R="$(curl -fsL --user-agent "${UA_Browser}" --max-time ${CurlMaxTime} --write-out "%{http_code}" --output /dev/null http://203.104.209.7/kcscontents/)"
+    if [[ "${R_R}" != "curl"* ]]; then
+        if [ "${R_R}" = "200" ]; then
+            LemonBench_Result_MediaUnlockTest_KanColleJP="Yes"
+            echo -n -e "\r Kantai Collection(JP):\t\t\t${Font_Green}Yes${Font_Suffix}\n"
+            elif [ "${R_R}" = "403" ]; then
+            LemonBench_Result_MediaUnlockTest_KanColleJP="No"
+            echo -n -e "\r Kantai Collection(JP):\t\t\t${Font_Red}No${Font_Suffix}\n"
+            elif [ "${R_R}" = "000" ]; then
+            LemonBench_Result_MediaUnlockTest_KanColleJP="Connection failed"
+            echo -n -e "\r Kantai Collection(JP):\t\t\t${Font_Red}Connection failed${Font_Suffix}\n"
+        else
+            LemonBench_Result_MediaUnlockTest_KanColleJP="Failed: Unkown error"
+            echo -n -e "\r Kantai Collection(JP):\t\t\t${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+        fi
+    else
+        LemonBench_Result_MediaUnlockTest_KanColleJP="Connection failed"
+        echo -n -e "\r Kantai Collection(JP):\t\t\t${Font_Red}Connection failed${Font_Suffix}\n"
+    fi
+}
+#
+# -> 流媒体解锁测试 - Netflix
+BenchAPI_MediaUnlockTest_Netflix() {
+    local R_R1 && R_R1=$(curl -fsL --user-agent "${UA_Browser}" --max-time ${CurlMaxTime} --write-out "%{http_code}" --output /dev/null "https://www.netflix.com/title/81215567" 2>&1)
+    if [ "${R_R1}" = "404" ]; then
+        LemonBench_Result_MediaUnlockTest_Netflix="Originals only"
+        echo -n -e "\r Netflix:\t\t\t\t${Font_Green}Originals only${Font_Suffix}\n"
+        elif [ "${R_R1}" = "403" ]; then
+        LemonBench_Result_MediaUnlockTest_Netflix="No"
+        echo -n -e "\r Netflix:\t\t\t\t${Font_Red}No${Font_Suffix}\n"
+        elif [ "${R_R1}" = "200" ]; then
+        local R_R2 && R_R2="$(curl -fsL --user-agent "${UA_Browser}" --max-time ${CurlMaxTime} --write-out "%{redirect_url}" --output /dev/null "https://www.netflix.com/title/80018499" | cut -d '/' -f4 | cut -d '-' -f1 | tr "[:lower:]" "[:upper:]")"
+        if [ -z "${R_R2}" ]; then
+            R_R2="US"
+        fi
+        LemonBench_Result_MediaUnlockTest_Netflix="Yes (GeoIP: ${R_R2})"
+        echo -n -e "\r Netflix:\t\t\t\t${Font_Green}Yes (GeoIP: ${R_R2})${Font_Suffix}\n"
+        elif [ "${R_R1}" = "000" ]; then
+        LemonBench_Result_MediaUnlockTest_Netflix="Connection failed"
+        echo -n -e "\r Netflix:\t\t\t\t${Font_Red}Connection failed${Font_Suffix}\n"
+    else
+        LemonBench_Result_MediaUnlockTest_Netflix="Failed: Unkown error"
+        echo -n -e "\r Netflix:\t\t\t\t${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+    fi
+}
+#
+# -> 流媒体解锁测试 - YouTube Premium
+BenchAPI_MediaUnlockTest_YoutubePremium() {
+    local R_R1 && R_R1="$(curl -fsL --user-agent "${UA_Browser}" --max-time ${CurlMaxTime} https://www.youtube.com/red 2>&1)"
+    if [[ "${R_R1}" == "curl"* ]]; then
+        LemonBench_Result_MediaUnlockTest_YoutubePremium="Connection failed"
+        echo -n -e "\r Youtube Premium:\t\t\t${Font_Red}Connection failed${Font_Suffix}\n"
+    else
+        local R_R2 && R_R2="$(echo "${R_R1}" | grep -oP '(?<="countryCode":").*?(?=")')"
+        if [ -n "${R_R2}" ]; then
+            LemonBench_Result_MediaUnlockTest_YoutubePremium="Yes (GeoIP: ${R_R2})"
+            echo -n -e "\r Youtube Premium:\t\t\t${Font_Red}Yes (GeoIP: ${R_R2})${Font_Suffix}\n"
+        fi
+        local R_R3 && R_R3="$(echo "${R_R1}" | grep -o "Premium is not available in your country")"
+        if [ -n "${R_R3}" ]; then
+            LemonBench_Result_MediaUnlockTest_YoutubePremium="No"
+            echo -n -e "\r Youtube Premium:\t\t\t${Font_Red}No${Font_Suffix}\n"
+        fi
+        LemonBench_Result_MediaUnlockTest_YoutubePremium="Failed: Unkown error"
+        echo -n -e "\r Youtube Premium:\t\t\t${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+    fi
+}
+#
+# -> 流媒体解锁测试 - Tiktok Region
+BenchAPI_MediaUnlockTest_TiktokRegion() {
+    local R_R1 && R_R1="$(curl -fsL --user-agent "${UA_Browser}" --max-time ${CurlMaxTime} https://www.tiktok.com/ 2>&1)"
+    if [[ "${R_R1}" == "curl"* ]]; then
+        LemonBench_Result_MediaUnlockTest_Tiktok="Connection failed"
+        echo -n -e "\r Tiktok:\t\t\t\t${Font_Red}Connection failed${Font_Suffix}\n"
+    else
+        local R_R2 && R_R2="$(echo "${R_R1}" | grep -oP '(?<="\$region":").*?(?=")' | head -1)"
+        if [ -n "${R_R2}" ]; then
+            LemonBench_Result_MediaUnlockTest_Tiktok="Yes (GeoIP: ${R_R2})"
+            echo -n -e "\r Tiktok:\t\t\t\t${Font_Green}Yes (GeoIP: ${R_R2})${Font_Suffix}\n"
+        else
+            LemonBench_Result_MediaUnlockTest_Tiktok="Failed(Unkown error)"
+            echo -n -e "\r Tiktok:\t\t\t\t${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+        fi
+    fi
+}
+#
+# -> 流媒体解锁测试 - Steam货币
+BenchAPI_MediaUnlockTest_SteamPriceCurrency() {
+    local R_R1 && R_R1="$(curl -fsL --user-agent "${UA_Browser}" --max-time ${CurlMaxTime} https://store.steampowered.com/app/20 2>&1)"
+    if [[ "$R_R1" != "curl"* ]]; then
+        local R_R2 && R_R2="$(echo "${R_R1}" | grep 'priceCurrency' | grep -oP '(?<=content\=").*?(?=")')"
+        if [ -n "${R_R2}" ]; then
+            LemonBench_Result_MediaUnlockTest_Steam="${R_R2}"
+            echo -n -e "\r Steam currency:\t\t\t ${R_R2}\n"
+        else
+            LemonBench_Result_MediaUnlockTest_Steam="Failed(Unkown error)"
+            echo -n -e "\r Steam currency:\t\t\t ${Font_Red}Failed: Unkown error${Font_Suffix}\n"
+        fi
+    else
+        LemonBench_Result_MediaUnlockTest_Steam="Connection error"
+        echo -n -e "\r Steam currency:\t\t\t ${Font_Red}Connection error${Font_Suffix}\n"
     fi
 }
 
@@ -1795,8 +1947,6 @@ Function_GenerateResult_MediaUnlockTest() {
         echo -e " Bahamut Anime:\t\t\t\t${LemonBench_Result_MediaUnlockTest_BahamutAnime}" >>$rfile
         # Abema.TV
         echo -e " Abema.TV:\t\t\t\t${LemonBench_Result_MediaUnlockTest_AbemaTV_IPTest}" >>$rfile
-        # Princess Connect Re:Dive 日服
-        echo -e " Princess Connect Re:Dive Japan:\t${LemonBench_Result_MediaUnlockTest_PCRJP}" >>$rfile
         # 爱奇艺台湾站
         # echo -e " IQiYi Taiwan (Beta):\t\t\t${LemonBench_Result_MediaUnlockTest_IQiYi_Taiwan}" >>$rfile
         # BBC
@@ -1807,6 +1957,23 @@ Function_GenerateResult_MediaUnlockTest() {
         echo -e " Bilibili Hongkong/Macau/Taiwan:\t${LemonBench_Result_MediaUnlockTest_BilibiliHKMCTW}" >>$rfile
         # 哔哩哔哩台湾限定
         echo -e " Bilibili Taiwan Only:\t\t\t${LemonBench_Result_MediaUnlockTest_BilibiliTW}" >>$rfile
+        # NicoNico
+        echo -e " NicoNico:\t\t\t\t${LemonBench_Result_MediaUnlockTest_Nico}" >>$rfile
+        #Netflix
+        echo -e " Netflix:\t\t\t\t${LemonBench_Result_MediaUnlockTest_Netflix}" >>$rfile
+        #Youtube Premium
+        echo -e " Youtube Premium:\t\t\t${LemonBench_Result_MediaUnlockTest_YoutubePremium}" >>$rfile
+        #Tiktok
+        echo -e " Tiktok:\t\t\t\t${LemonBench_Result_MediaUnlockTest_Tiktok}" >>$rfile
+        # Princess Connect Re:Dive 日服
+        echo -e " Princess Connect Re:Dive Japan:\t${LemonBench_Result_MediaUnlockTest_PCRJP}" >>$rfile
+        #Pretty Derby(JP)
+        echo -e " Pretty Derby(JP):\t\t\t${LemonBench_Result_MediaUnlockTest_UmamusumeJP}" >>$rfile
+        #Kantai Collection(JP)
+        echo -e " Kantai Collection(JP):\t\t\t${LemonBench_Result_MediaUnlockTest_KanColleJP}" >>$rfile
+        
+        #Steam
+        echo -e " Steam currency:\t\t\t${LemonBench_Result_MediaUnlockTest_Steam}" >>$rfile
     fi
 }
 
