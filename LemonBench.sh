@@ -1279,12 +1279,12 @@ Function_Speedtest_Full() {
     Run_Speedtest "24447" "China, Shanghai CU"
     Run_Speedtest "4884"  "China,   Fuzhou CU"
     # 国内测试 - 电信组
-    Run_Speedtest "34988" "China, Shenyang CT"
+    Run_Speedtest "35722" "China, Tianjin CT"
     Run_Speedtest "3633" "China, Shanghai CT"
-    Run_Speedtest "51772" "China,   Fujian CT"
+    Run_Speedtest "26352" "China,   Nanjing CT"
     # 国内测试 - 移动组
     Run_Speedtest "25858" "China,  Beijing CM"
-    Run_Speedtest "15863" "China,  Nanning CM"
+    Run_Speedtest "16171" "China,  Fuzhou CM"
     Run_Speedtest "4575"  "China,  Chengdu CM"
     # 海外测试
     Run_Speedtest "28912" "Hong Kong, fdcservers"
