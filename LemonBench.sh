@@ -1271,7 +1271,7 @@ Function_Speedtest_Full() {
     Check_JSONQuery
     Check_Speedtest
     echo -e " ${Font_Yellow}Node Name\t\t\tUpload Speed\tDownload Speed\tPing Latency${Font_Suffix}"
-    echo -e " Node Name\t\t\tUpload Speed\tDownload Speed\tPing Latency" >>${WorkDir}/Speedtest/result.txt
+    echo -e " Node Name\t\t\t\t\tUpload Speed\tDownload Speed\tPing Latency" >>${WorkDir}/Speedtest/result.txt
     # 默认测试
     Run_Speedtest "default" "Speedtest                             Default"
     # 国内测试 - 联通组    
