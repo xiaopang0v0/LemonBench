@@ -1273,8 +1273,8 @@ Function_Speedtest_Full() {
     echo -e " ${Font_Yellow}Node Name\t\t\tUpload Speed\tDownload Speed\tPing Latency${Font_Suffix}"
     echo -e " Node Name\t\t\tUpload Speed\tDownload Speed\tPing Latency" >>${WorkDir}/Speedtest/result.txt
     # 默认测试
-    Run_Speedtest "default" "Speedtest Default"
-    # 国内测试 - 联通组
+    Run_Speedtest "default" "Speedtest                             Default"
+    # 国内测试 - 联通组    
     Run_Speedtest "45170" "China,                JiangSu Wuxi CU"
     Run_Speedtest "24447" "China,           ShangHai Shanghai CU"
     Run_Speedtest "36646" "China,             HeNan ZhengZhou CU"
