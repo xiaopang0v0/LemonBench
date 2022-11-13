@@ -1297,8 +1297,11 @@ Function_Speedtest_Full() {
     Run_Speedtest "4938"  "Taiwan, Taoyuan HiNet"
     Run_Speedtest "7311"  "Singapore SG, M1"
     Run_Speedtest "35057" "UK, London Clouvider"
-    Run_Speedtest "3586"  "US, Washington DC LeaseWeb"
     Run_Speedtest "3587"  "NL, Haarlem LeaseWeb"
+    Run_Speedtest "29243"  "FR, Roubaix OVH"
+    Run_Speedtest "42423" "DE, Falkenstein Hetzner"
+    Run_Speedtest "3586"  "US, Washington DC LeaseWeb"
+    Run_Speedtest "15423" "US, Kansas R&E Network"
     Run_Speedtest "7190"  "US, Los Angeles Sharktech"
     Run_Speedtest "35055" "US, New York Clouvider"
     # 执行完成, 标记FLAG
