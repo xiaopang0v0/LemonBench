@@ -1289,21 +1289,24 @@ Function_Speedtest_Full() {
     Run_Speedtest "41910" "China, ZhengZhou CM"
     Run_Speedtest "54312" "China,  HangZhou CM"
     Run_Speedtest "4575"  "China,   Chengdu CM"
+
+    # 国内测试 - 教育网
+    Run_Speedtest "30852"  "China,   Duke Kunshan EDU"
     
     # 海外测试
-    Run_Speedtest "28912" "Hong Kong, fdcservers"
-    Run_Speedtest "6527"  "Korea, Kdatacenter"
-    Run_Speedtest "28910" "Japan, fdcservers"
-    Run_Speedtest "4938"  "Taiwan, Taoyuan HiNet"
-    Run_Speedtest "7311"  "Singapore SG, M1"
-    Run_Speedtest "35057" "UK, London Clouvider"
-    Run_Speedtest "3587"  "NL, Haarlem LeaseWeb"
-    Run_Speedtest "29243"  "FR, Roubaix OVH"
-    Run_Speedtest "42423" "DE, Falkenstein Hetzner"
+    Run_Speedtest "28912" "China,Hong Kong fdcservers"
+    Run_Speedtest "6527"  "Korea,   Seoul Kdatacenter"
+    Run_Speedtest "28910" "Japan,    Tokyo fdcservers"
+    Run_Speedtest "4938"  "China,Taiwan Taoyuan HiNet"
+    Run_Speedtest "7311"  "SG,          Singapore  M1"
+    Run_Speedtest "35057" "UK,       London Clouvider"
+    Run_Speedtest "3587"  "NL,       Haarlem LeaseWeb"
+    Run_Speedtest "29243" "FR,            Roubaix OVH"
+    Run_Speedtest "42423" "DE,    Falkenstein Hetzner"
     Run_Speedtest "3586"  "US, Washington DC LeaseWeb"
-    Run_Speedtest "15423" "US, Kansas R&E Network"
-    Run_Speedtest "7190"  "US, Los Angeles Sharktech"
-    Run_Speedtest "35055" "US, New York Clouvider"
+    Run_Speedtest "15423" "US,     Kansas R&E Network"
+    Run_Speedtest "7190"  "US,  Los Angeles Sharktech"
+    Run_Speedtest "35055" "US,     New York Clouvider"
     # 执行完成, 标记FLAG
     LBench_Flag_FinishSpeedtestFull="1"
     sleep 1
