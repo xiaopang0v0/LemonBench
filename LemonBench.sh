@@ -1509,7 +1509,7 @@ Function_BestTrace_Full() {
         Run_BestTrace "50.7.159.4" "${GlobalVar_TracerouteMode}" "20" "Japan, fdcservers"
         # 韩国部分
         Run_BestTrace "210.114.41.101" "${GlobalVar_TracerouteMode}" "20" "South Korea, KT"
-        Run_BestTrace "175.122.253.62 " "${GlobalVar_TracerouteMode}" "20" "South Korea, SK"
+        Run_BestTrace "175.122.253.62" "${GlobalVar_TracerouteMode}" "20" "South Korea, SK"
         Run_BestTrace "211.174.62.44" "${GlobalVar_TracerouteMode}" "20" "South Korea, LG"
         # 台湾部分
         Run_BestTrace "202.133.242.1" "${GlobalVar_TracerouteMode}" "20" "China, Taiwan Chief"
