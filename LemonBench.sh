@@ -1275,38 +1275,38 @@ Function_Speedtest_Full() {
     # 默认测试
     Run_Speedtest "default" "Speedtest Default"
     # 国内测试 - 联通组
-    Run_Speedtest "45170" "China,      Wuxi CU"
-    Run_Speedtest "24447" "China,  Shanghai CU"
-    Run_Speedtest "36646" "China, ZhengZhou CU"
-    Run_Speedtest "6870"  "China,  ChangSha CU"
+    Run_Speedtest "45170" "China,                JiangSu Wuxi CU"
+    Run_Speedtest "24447" "China,           ShangHai Shanghai CU"
+    Run_Speedtest "36646" "China,             HeNan ZhengZhou CU"
+    Run_Speedtest "6870"  "China,              HuNan ChangSha CU"
     # 国内测试 - 电信组
-    Run_Speedtest "35722" "China,   Tianjin CT"
-    Run_Speedtest "3633"  "China,  Shanghai CT"
-    Run_Speedtest "26352" "China,   Nanjing CT"
-    Run_Speedtest "28225" "China,  ChangSha CT"
+    Run_Speedtest "35722" "China,             TianJin Tianjin CT"
+    Run_Speedtest "3633"  "China,            ShangHaiShanghai CT"
+    Run_Speedtest "26352" "China,             JiangSu Nanjing CT"
+    Run_Speedtest "28225" "China,              HuNan ChangSha CT"
 
     # 国内测试 - 移动组
-    Run_Speedtest "41910" "China, ZhengZhou CM"
-    Run_Speedtest "54312" "China,  HangZhou CM"
-    Run_Speedtest "4575"  "China,   Chengdu CM"
+    Run_Speedtest "41910" "China,             HeNan ZhengZhou CM"
+    Run_Speedtest "54312" "China,           ZheJiang HangZhou CM"
+    Run_Speedtest "4575"  "China,             SiChuan Chengdu CM"
 
     # 国内测试 - 教育网
-    Run_Speedtest "30852"  "China,   Duke Kunshan EDU"
+    Run_Speedtest "30852"  "China,      JiangSu Duke Kunshan EDU"
     
     # 海外测试
-    Run_Speedtest "28912" "China,Hong Kong fdcservers"
-    Run_Speedtest "6527"  "Korea,   Seoul Kdatacenter"
-    Run_Speedtest "28910" "Japan,    Tokyo fdcservers"
-    Run_Speedtest "4938"  "China,Taiwan Taoyuan HiNet"
-    Run_Speedtest "7311"  "SG,          Singapore  M1"
-    Run_Speedtest "35057" "UK,       London Clouvider"
-    Run_Speedtest "3587"  "NL,       Haarlem LeaseWeb"
-    Run_Speedtest "29243" "FR,            Roubaix OVH"
-    Run_Speedtest "42423" "DE,    Falkenstein Hetzner"
-    Run_Speedtest "3586"  "US, Washington DC LeaseWeb"
-    Run_Speedtest "15423" "US,     Kansas R&E Network"
-    Run_Speedtest "7190"  "US,  Los Angeles Sharktech"
-    Run_Speedtest "35055" "US,     New York Clouvider"
+    Run_Speedtest "28912" "China,           Hong Kong fdcservers"
+    Run_Speedtest "6527"  "Korea,              Seoul Kdatacenter"
+    Run_Speedtest "28910" "Japan,               Tokyo fdcservers"
+    Run_Speedtest "4938"  "China,           Taiwan Taoyuan HiNet"
+    Run_Speedtest "7311"  "Singapore,              Singapore  M1"
+    Run_Speedtest "35057" "United Kingdom,      London Clouvider"
+    Run_Speedtest "3587"  "Netherlands,         Haarlem LeaseWeb"
+    Run_Speedtest "29243" "France,                   Roubaix OVH"
+    Run_Speedtest "42423" "Germany,          Falkenstein Hetzner"
+    Run_Speedtest "3586"  "United States, Washington DC LeaseWeb"
+    Run_Speedtest "15423" "United States,     Kansas R&E Network"
+    Run_Speedtest "7190"  "United States,  Los Angeles Sharktech"
+    Run_Speedtest "35055" "United States,     New York Clouvider"
     # 执行完成, 标记FLAG
     LBench_Flag_FinishSpeedtestFull="1"
     sleep 1
