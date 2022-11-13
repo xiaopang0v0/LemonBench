@@ -1256,9 +1256,9 @@ Function_Speedtest_Fast() {
     # 默认测试
     Run_Speedtest "default" "Speedtest Default"
     # 快速测试
-    Run_Speedtest "9484" "China, Jilin CU"
-    Run_Speedtest "15863" "China, Nanning CM"
-    Run_Speedtest "26352" "China, Nanjing CT"
+    Run_Speedtest "37235" "China, ShenYang CU"
+    Run_Speedtest "53087" "China, ShenZhen CM"
+    Run_Speedtest "26352" "China,  Nanjing CT"
     # 执行完成, 标记FLAG
     LBench_Flag_FinishSpeedtestFast="1"
     sleep 1
@@ -1275,17 +1275,20 @@ Function_Speedtest_Full() {
     # 默认测试
     Run_Speedtest "default" "Speedtest Default"
     # 国内测试 - 联通组
-    Run_Speedtest "45170" "China,     Wuxi CU"
-    Run_Speedtest "24447" "China, Shanghai CU"
-    Run_Speedtest "36646" "China,   ZhengZhou CU"
+    Run_Speedtest "45170" "China,      Wuxi CU"
+    Run_Speedtest "24447" "China,  Shanghai CU"
+    Run_Speedtest "36646" "China, ZhengZhou CU"
+    Run_Speedtest "6870"  "China,  ChangSha CU"
     # 国内测试 - 电信组
-    Run_Speedtest "35722" "China, Tianjin CT"
-    Run_Speedtest "3633" "China, Shanghai CT"
+    Run_Speedtest "35722" "China,   Tianjin CT"
+    Run_Speedtest "3633"  "China,  Shanghai CT"
     Run_Speedtest "26352" "China,   Nanjing CT"
+    Run_Speedtest "28225" "China,  ChangSha CT"
+
     # 国内测试 - 移动组
-    Run_Speedtest "41910" "China,  ZhengZhou CM"
+    Run_Speedtest "41910" "China, ZhengZhou CM"
     Run_Speedtest "54312" "China,  HangZhou CM"
-    Run_Speedtest "4575"  "China,  Chengdu CM"
+    Run_Speedtest "4575"  "China,   Chengdu CM"
     
     # 海外测试
     Run_Speedtest "28912" "Hong Kong, fdcservers"
@@ -1294,7 +1297,9 @@ Function_Speedtest_Full() {
     Run_Speedtest "4938"  "Taiwan, Taoyuan HiNet"
     Run_Speedtest "7311"  "Singapore SG, M1"
     Run_Speedtest "35057" "UK, London Clouvider"
-    Run_Speedtest "7190"  "US, LAX Sharktech"
+    Run_Speedtest "3586"  "US, Washington DC LeaseWeb"
+    Run_Speedtest "3587"  "NL, Haarlem LeaseWeb"
+    Run_Speedtest "7190"  "US, Los Angeles Sharktech"
     Run_Speedtest "35055" "US, New York Clouvider"
     # 执行完成, 标记FLAG
     LBench_Flag_FinishSpeedtestFull="1"
